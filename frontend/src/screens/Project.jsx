@@ -14,7 +14,11 @@ function SyntaxHighlightedCode(props) {
 
     useEffect(() => {
         if (ref.current && props.className?.includes('lang-')) {
-            window.hljs.highlightElement(ref.current)
+            if (hljs) {
+                hljs.highlightElement(ref.current)
+            } else {
+                console.error("Highlight.js is not loaded.");
+            }
         }
     }, [props.className, props.children])
 
@@ -145,11 +149,9 @@ const Project = () => {
 
 
         axios.get(`/projects/get-project/${location.state.project._id}`).then(res => {
-
-            console.log(res.data.project)
-
-            setProject(res.data.project)
-            setFileTree(res.data.project.fileTree || {})
+            console.log("Project Data:", res.data.project);
+            setProject(res.data.project);
+            setFileTree(res.data.project.fileTree || {});
         })
 
         axios.get('/users/all').then(res => {
