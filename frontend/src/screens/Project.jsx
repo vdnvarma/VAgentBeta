@@ -6,19 +6,17 @@ import { initializeSocket, receiveMessage, sendMessage } from '../config/socket'
 import Markdown from 'markdown-to-jsx'
 import hljs from 'highlight.js';
 import { getWebContainer } from '../config/webContainer'
+import 'highlight.js/styles/default.css'; // or any other style you prefer
 
 
 function SyntaxHighlightedCode(props) {
     const ref = useRef(null)
 
-    React.useEffect(() => {
-        if (ref.current && props.className?.includes('lang-') && window.hljs) {
+    useEffect(() => {
+        if (ref.current && props.className?.includes('lang-')) {
             window.hljs.highlightElement(ref.current)
-
-            // hljs won't reprocess the element unless this attribute is removed
-            ref.current.removeAttribute('data-highlighted')
         }
-    }, [ props.className, props.children ])
+    }, [props.className, props.children])
 
     return <code {...props} ref={ref} />
 }
