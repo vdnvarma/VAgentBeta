@@ -164,6 +164,11 @@ const Project = () => {
 
     }, [])
 
+    useEffect(() => {
+        console.log("File Tree:", fileTree);
+        console.log("Current File:", currentFile);
+    }, [fileTree, currentFile]);
+
     function saveFileTree(ft) {
         axios.put('/projects/update-file-tree', {
             projectId: project._id,
