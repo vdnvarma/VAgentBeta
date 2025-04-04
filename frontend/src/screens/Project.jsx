@@ -365,7 +365,7 @@ const Project = () => {
                                                 setFileTree(ft)
                                                 saveFileTree(ft)
                                             }}
-                                            dangerouslySetInnerHTML={{ __html: hljs.highlight('javascript', fileTree[ currentFile ].file.contents).value }}
+                                            dangerouslySetInnerHTML={{ __html:('javascript', fileTree[ currentFile ].file.contents).value }}
                                             style={{
                                                 whiteSpace: 'pre-wrap',
                                                 paddingBottom: '25rem',
