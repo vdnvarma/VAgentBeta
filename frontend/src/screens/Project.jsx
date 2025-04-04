@@ -148,9 +148,7 @@ const Project = () => {
 
 
         axios.get(`/projects/get-project/${location.state.project._id}`).then(res => {
-
-            console.log(res.data.project)
-
+            console.log("Project Data:", res.data.project);
             setProject(res.data.project)
             setFileTree(res.data.project.fileTree || {})
         })
@@ -166,6 +164,10 @@ const Project = () => {
         })
 
     }, [])
+
+    useEffect(() => {
+        console.log("File Tree:", fileTree);
+    }, [fileTree]);
 
     function saveFileTree(ft) {
         axios.put('/projects/update-file-tree', {
@@ -365,7 +367,7 @@ const Project = () => {
                                                 setFileTree(ft)
                                                 saveFileTree(ft)
                                             }}
-                                            dangerouslySetInnerHTML={{ __html:('javascript', fileTree[ currentFile ].file.contents).value }}
+                                            dangerouslySetInnerHTML={{ __html: hljs.highlight('javascript', fileTree[ currentFile ].file.contents).value }}
                                             style={{
                                                 whiteSpace: 'pre-wrap',
                                                 paddingBottom: '25rem',
