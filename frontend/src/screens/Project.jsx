@@ -124,8 +124,8 @@ const Project = () => {
 
         initializeSocket(project._id)
 
-        if (!webContainer) {
-            getWebContainer().then(container => {
+        getWebContainer()
+            .then(container => {
                 if (container) {
                     setWebContainer(container)
                     console.log("Container initialized:", container)
@@ -133,7 +133,9 @@ const Project = () => {
                     console.error("Failed to initialize web container.")
                 }
             })
-        }
+            .catch(error => {
+                console.error("Error initializing web container:", error)
+            })
 
 
         receiveMessage('project-message', data => {
@@ -146,6 +148,11 @@ const Project = () => {
                 const message = JSON.parse(data.message)
 
                 console.log(message)
+
+                if (!webContainer) {
+                    console.error("Web container is not initialized.");
+                    return; // Exit if webContainer is null
+                }
 
                 webContainer?.mount(message.fileTree)
 
