@@ -202,7 +202,7 @@ const Project = () => {
     }
 
 
-    // Removed appendIncomingMessage and appendOutgoingMessage functions
+    
 
     function scrollToBottom() {
         messageBox.current.scrollTop = messageBox.current.scrollHeight
@@ -282,23 +282,28 @@ const Project = () => {
 
                 <div className="explorer h-full max-w-64 min-w-52 bg-slate-200">
                     <div className="file-tree w-full">
-                    {
+                        {
                             Object.keys(fileTree).map((file, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => {
-                                        setCurrentFile(file)
-                                        setOpenFiles([ ...new Set([ ...openFiles, file ]) ])
-                                    }}
-                                    className="tree-element cursor-pointer p-2 px-4 flex items-center gap-2 bg-slate-300 w-full">
-                                    <p
-                                        className='font-semibold text-lg'
-                                    >{file}</p>
-                                </button>))
-
+                                <div key={index} className="flex items-center justify-between">
+                                    <button
+                                        onClick={() => {
+                                            setCurrentFile(file);
+                                            setOpenFiles([...new Set([...openFiles, file])]);
+                                        }}
+                                        className="tree-element cursor-pointer p-2 px-4 flex items-center gap-2 bg-slate-300 w-full">
+                                        <p className='font-semibold text-lg'>{file}</p>
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setOpenFiles(openFiles.filter(openFile => openFile !== file));
+                                        }}
+                                        className="remove-button p-2 text-red-500">
+                                        <i className="ri-close-fill"></i>
+                                    </button>
+                                </div>
+                            ))
                         }
                     </div>
-
                 </div>
 
 
