@@ -126,8 +126,12 @@ const Project = () => {
 
         if (!webContainer) {
             getWebContainer().then(container => {
-                setWebContainer(container)
-                console.log("container started")
+                if (container) {
+                    setWebContainer(container)
+                    console.log("Container initialized:", container)
+                } else {
+                    console.error("Failed to initialize web container.")
+                }
             })
         }
 
