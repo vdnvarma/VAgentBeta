@@ -321,7 +321,9 @@ const Project = () => {
                                                     setCurrentFile(null); // Optionally reset currentFile if the closed file was active
                                                 }
                                             }}
-                                            className={`close-button p-2 ${currentFile === file ? 'bg-slate-400' : 'bg-slate-300'} text-white`}>
+                                            className={`close-button p-2 flex items-center justify-center ${currentFile === file ? 'bg-slate-400' : 'bg-slate-300'} text-white`}
+                                            style={{ height: '100%' }}
+                                        >
                                             <i className="ri-close-fill"></i>
                                         </button>
                                     </div>
