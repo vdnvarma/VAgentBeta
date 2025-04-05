@@ -321,7 +321,7 @@ const Project = () => {
                                                     setCurrentFile(null); // Optionally reset currentFile if the closed file was active
                                                 }
                                             }}
-                                            className="close-button p-2 ">
+                                            className="close-button p-2 bg-slate-300 ">
                                             <i className="ri-close-fill"></i>
                                         </button>
                                     </div>
