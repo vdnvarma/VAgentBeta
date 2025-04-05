@@ -311,7 +311,7 @@ const Project = () => {
                                     <div key={index} className="flex items-center">
                                         <button
                                             onClick={() => setCurrentFile(file)}
-                                            className={`open-file cursor-pointer p-2 px-4 flex items-center w-fit gap-2 bg-slate-300 ${currentFile === file ? 'bg-slate-400' : ''}`}>
+                                            className={`open-file cursor-pointer p-2 px-4 flex items-center w-fit gap-2 ${currentFile === file ? 'bg-slate-400' : 'bg-slate-300'}`}>
                                             <p className='font-semibold text-lg'>{file}</p>
                                         </button>
                                         <button
@@ -321,7 +321,7 @@ const Project = () => {
                                                     setCurrentFile(null); // Optionally reset currentFile if the closed file was active
                                                 }
                                             }}
-                                            className="close-button p-2 bg-slate-300 ${currentFile === file ? 'bg-slate-400'">
+                                            className={`close-button p-2 ${currentFile === file ? 'bg-slate-400' : 'bg-slate-300'} text-white`}>
                                             <i className="ri-close-fill"></i>
                                         </button>
                                     </div>
