@@ -11,7 +11,13 @@ connect();
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+    origin: ['https://vagent.onrender.com'], // Add your frontend URL here
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Specify allowed methods
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+};
+
+app.use(cors(corsOptions));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
