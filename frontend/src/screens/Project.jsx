@@ -16,7 +16,6 @@ function SyntaxHighlightedCode(props) {
         if (ref.current && props.className?.includes('lang-') && window.hljs) {
             window.hljs.highlightElement(ref.current)
 
-            // hljs won't reprocess the element unless this attribute is removed
             ref.current.removeAttribute('data-highlighted')
         }
     }, [ props.className, props.children ])
@@ -39,7 +38,18 @@ const Project = () => {
 
     const [ users, setUsers ] = useState([])
     const [ messages, setMessages ] = useState([]) // New state variable for messages
-    const [ fileTree, setFileTree ] = useState({})
+    const [ fileTree, setFileTree ] = useState({
+        "app.js": {
+            "file": {
+                "contents": "console.log('Hello World');"
+            }
+        },
+        "package.json": {
+            "file": {
+                "contents": "{ \"name\": \"example\" }"
+            }
+        }
+    })
 
     const [ currentFile, setCurrentFile ] = useState(null)
     const [ openFiles, setOpenFiles ] = useState([])
@@ -303,38 +313,39 @@ const Project = () => {
                         <div className="actions flex gap-2">
                             <button
                                 onClick={async () => {
-                                    await webContainer.mount(fileTree)
+                                    if (!webContainer) {
+                                        console.error("Web container is not initialized.");
+                                        return; // Exit if webContainer is null
+                                    }
 
+                                    await webContainer.mount(fileTree);
 
-                                    const installProcess = await webContainer.spawn("npm", [ "install" ])
-
-
+                                    const installProcess = await webContainer.spawn("npm", ["install"]);
 
                                     installProcess.output.pipeTo(new WritableStream({
                                         write(chunk) {
-                                            console.log(chunk)
+                                            console.log(chunk);
                                         }
-                                    }))
+                                    }));
 
                                     if (runProcess) {
-                                        runProcess.kill()
+                                        runProcess.kill();
                                     }
 
-                                    let tempRunProcess = await webContainer.spawn("npm", [ "start" ]);
+                                    let tempRunProcess = await webContainer.spawn("npm", ["start"]);
 
                                     tempRunProcess.output.pipeTo(new WritableStream({
                                         write(chunk) {
-                                            console.log(chunk)
+                                            console.log(chunk);
                                         }
-                                    }))
+                                    }));
 
-                                    setRunProcess(tempRunProcess)
+                                    setRunProcess(tempRunProcess);
 
                                     webContainer.on('server-ready', (port, url) => {
-                                        console.log(port, url)
-                                        setIframeUrl(url)
-                                    })
-
+                                        console.log(port, url);
+                                        setIframeUrl(url);
+                                    });
                                 }}
                                 className='p-2 px-4 bg-slate-300 text-white'
                             >
