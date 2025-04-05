@@ -284,24 +284,18 @@ const Project = () => {
                     <div className="file-tree w-full">
                         {
                             Object.keys(fileTree).map((file, index) => (
-                                <div key={index} className="flex items-center justify-between">
-                                    <button
-                                        onClick={() => {
-                                            setCurrentFile(file);
-                                            setOpenFiles([...new Set([...openFiles, file])]);
-                                        }}
-                                        className="tree-element cursor-pointer p-2 px-4 flex items-center gap-2 bg-slate-300 w-full">
-                                        <p className='font-semibold text-lg'>{file}</p>
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            setOpenFiles(openFiles.filter(openFile => openFile !== file));
-                                        }}
-                                        className="remove-button p-2 text-red-500">
-                                        <i className="ri-close-fill"></i>
-                                    </button>
-                                </div>
-                            ))
+                                <button
+                                    key={index}
+                                    onClick={() => {
+                                        setCurrentFile(file)
+                                        setOpenFiles([ ...new Set([ ...openFiles, file ]) ])
+                                    }}
+                                    className="tree-element cursor-pointer p-2 px-4 flex items-center gap-2 bg-slate-300 w-full">
+                                    <p
+                                        className='font-semibold text-lg'
+                                    >{file}</p>
+                                </button>))
+
                         }
                     </div>
                 </div>
@@ -314,14 +308,23 @@ const Project = () => {
                         <div className="files flex">
                             {
                                 openFiles.map((file, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => setCurrentFile(file)}
-                                        className={`open-file cursor-pointer p-2 px-4 flex items-center w-fit gap-2 bg-slate-300 ${currentFile === file ? 'bg-slate-400' : ''}`}>
-                                        <p
-                                            className='font-semibold text-lg'
-                                        >{file}</p>
-                                    </button>
+                                    <div key={index} className="flex items-center">
+                                        <button
+                                            onClick={() => setCurrentFile(file)}
+                                            className={`open-file cursor-pointer p-2 px-4 flex items-center w-fit gap-2 bg-slate-300 ${currentFile === file ? 'bg-slate-400' : ''}`}>
+                                            <p className='font-semibold text-lg'>{file}</p>
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setOpenFiles(openFiles.filter(openFile => openFile !== file));
+                                                if (currentFile === file) {
+                                                    setCurrentFile(null); // Optionally reset currentFile if the closed file was active
+                                                }
+                                            }}
+                                            className="close-button p-2 ">
+                                            <i className="ri-close-fill"></i>
+                                        </button>
+                                    </div>
                                 ))
                             }
                         </div>
