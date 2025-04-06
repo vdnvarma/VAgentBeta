@@ -5,8 +5,7 @@ import axios from '../config/axios'
 import { initializeSocket, receiveMessage, sendMessage } from '../config/socket'
 import Markdown from 'markdown-to-jsx'
 import hljs from 'highlight.js';
-import { getWebContainer } from '../config/webContainer'
-import 'highlight.js/styles/default.css'
+import { getWebContainer } from '../config/webcontainer'
 
 
 function SyntaxHighlightedCode(props) {
@@ -16,6 +15,7 @@ function SyntaxHighlightedCode(props) {
         if (ref.current && props.className?.includes('lang-') && window.hljs) {
             window.hljs.highlightElement(ref.current)
 
+            // hljs won't reprocess the element unless this attribute is removed
             ref.current.removeAttribute('data-highlighted')
         }
     }, [ props.className, props.children ])
@@ -38,18 +38,7 @@ const Project = () => {
 
     const [ users, setUsers ] = useState([])
     const [ messages, setMessages ] = useState([]) // New state variable for messages
-    const [ fileTree, setFileTree ] = useState({
-        "app.js": {
-            "file": {
-                "contents": "console.log('Hello World');"
-            }
-        },
-        "package.json": {
-            "file": {
-                "contents": "{ \"name\": \"example\" }"
-            }
-        }
-    })
+    const [ fileTree, setFileTree ] = useState({})
 
     const [ currentFile, setCurrentFile ] = useState(null)
     const [ openFiles, setOpenFiles ] = useState([])
@@ -124,18 +113,12 @@ const Project = () => {
 
         initializeSocket(project._id)
 
-        getWebContainer()
-            .then(container => {
-                if (container) {
-                    setWebContainer(container)
-                    console.log("Container initialized:", container)
-                } else {
-                    console.error("Failed to initialize web container.")
-                }
+        if (!webContainer) {
+            getWebContainer().then(container => {
+                setWebContainer(container)
+                console.log("container started")
             })
-            .catch(error => {
-                console.error("Error initializing web container:", error)
-            })
+        }
 
 
         receiveMessage('project-message', data => {
@@ -148,11 +131,6 @@ const Project = () => {
                 const message = JSON.parse(data.message)
 
                 console.log(message)
-
-                if (!webContainer) {
-                    console.error("Web container is not initialized.");
-                    return; // Exit if webContainer is null
-                }
 
                 webContainer?.mount(message.fileTree)
 
@@ -169,7 +147,9 @@ const Project = () => {
 
 
         axios.get(`/projects/get-project/${location.state.project._id}`).then(res => {
-            console.log("Project Data:", res.data.project);
+
+            console.log(res.data.project)
+
             setProject(res.data.project)
             setFileTree(res.data.project.fileTree || {})
         })
@@ -186,10 +166,6 @@ const Project = () => {
 
     }, [])
 
-    useEffect(() => {
-        console.log("File Tree:", fileTree);
-    }, [fileTree]);
-
     function saveFileTree(ft) {
         axios.put('/projects/update-file-tree', {
             projectId: project._id,
@@ -202,7 +178,7 @@ const Project = () => {
     }
 
 
-    
+    // Removed appendIncomingMessage and appendOutgoingMessage functions
 
     function scrollToBottom() {
         messageBox.current.scrollTop = messageBox.current.scrollHeight
@@ -298,6 +274,7 @@ const Project = () => {
 
                         }
                     </div>
+
                 </div>
 
 
@@ -308,25 +285,14 @@ const Project = () => {
                         <div className="files flex">
                             {
                                 openFiles.map((file, index) => (
-                                    <div key={index} className="flex items-center">
-                                        <button
-                                            onClick={() => setCurrentFile(file)}
-                                            className={`open-file cursor-pointer p-2 px-4 flex items-center w-fit gap-2 ${currentFile === file ? 'bg-slate-400' : 'bg-slate-300'}`}>
-                                            <p className='font-semibold text-lg'>{file}</p>
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setOpenFiles(openFiles.filter(openFile => openFile !== file));
-                                                if (currentFile === file) {
-                                                    setCurrentFile(null); // Optionally reset currentFile if the closed file was active
-                                                }
-                                            }}
-                                            className={`close-button p-2 flex items-center justify-center ${currentFile === file ? 'bg-slate-400' : 'bg-slate-300'} text-white`}
-                                            style={{ height: '100%' }}
-                                        >
-                                            <i className="ri-close-fill"></i>
-                                        </button>
-                                    </div>
+                                    <button
+                                        key={index}
+                                        onClick={() => setCurrentFile(file)}
+                                        className={`open-file cursor-pointer p-2 px-4 flex items-center w-fit gap-2 bg-slate-300 ${currentFile === file ? 'bg-slate-400' : ''}`}>
+                                        <p
+                                            className='font-semibold text-lg'
+                                        >{file}</p>
+                                    </button>
                                 ))
                             }
                         </div>
@@ -334,39 +300,38 @@ const Project = () => {
                         <div className="actions flex gap-2">
                             <button
                                 onClick={async () => {
-                                    if (!webContainer) {
-                                        console.error("Web container is not initialized.");
-                                        return; // Exit if webContainer is null
-                                    }
+                                    await webContainer.mount(fileTree)
 
-                                    await webContainer.mount(fileTree);
 
-                                    const installProcess = await webContainer.spawn("npm", ["install"]);
+                                    const installProcess = await webContainer.spawn("npm", [ "install" ])
+
+
 
                                     installProcess.output.pipeTo(new WritableStream({
                                         write(chunk) {
-                                            console.log(chunk);
+                                            console.log(chunk)
                                         }
-                                    }));
+                                    }))
 
                                     if (runProcess) {
-                                        runProcess.kill();
+                                        runProcess.kill()
                                     }
 
-                                    let tempRunProcess = await webContainer.spawn("npm", ["start"]);
+                                    let tempRunProcess = await webContainer.spawn("npm", [ "start" ]);
 
                                     tempRunProcess.output.pipeTo(new WritableStream({
                                         write(chunk) {
-                                            console.log(chunk);
+                                            console.log(chunk)
                                         }
-                                    }));
+                                    }))
 
-                                    setRunProcess(tempRunProcess);
+                                    setRunProcess(tempRunProcess)
 
                                     webContainer.on('server-ready', (port, url) => {
-                                        console.log(port, url);
-                                        setIframeUrl(url);
-                                    });
+                                        console.log(port, url)
+                                        setIframeUrl(url)
+                                    })
+
                                 }}
                                 className='p-2 px-4 bg-slate-300 text-white'
                             >
