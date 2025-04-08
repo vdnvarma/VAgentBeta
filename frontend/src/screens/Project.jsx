@@ -285,14 +285,25 @@ const Project = () => {
                         <div className="files flex">
                             {
                                 openFiles.map((file, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => setCurrentFile(file)}
-                                        className={`open-file cursor-pointer p-2 px-4 flex items-center w-fit gap-2 bg-slate-300 ${currentFile === file ? 'bg-slate-400' : ''}`}>
-                                        <p
-                                            className='font-semibold text-lg'
-                                        >{file}</p>
-                                    </button>
+                                    <div key={index} className="flex items-center">
+                                        <button
+                                            onClick={() => setCurrentFile(file)}
+                                            className={`open-file cursor-pointer p-2 px-4 flex items-center w-fit gap-2 ${currentFile === file ? 'bg-slate-400' : 'bg-slate-300'}`}>
+                                            <p className='font-semibold text-lg'>{file}</p>
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setOpenFiles(openFiles.filter(openFile => openFile !== file));
+                                                if (currentFile === file) {
+                                                    setCurrentFile(null); // Optionally reset currentFile if the closed file was active
+                                                }
+                                            }}
+                                            className={`close-button p-2 flex items-center justify-center ${currentFile === file ? 'bg-slate-400' : 'bg-slate-300'} text-white`}
+                                            style={{ height: '100%' }}
+                                        >
+                                            <i className="ri-close-fill"></i>
+                                        </button>
+                                    </div>
                                 ))
                             }
                         </div>
