@@ -93,8 +93,6 @@ io.on('connection', socket => {
     });
 });
 
-console.log(app._router.stack); // Logs all registered routes
-
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
