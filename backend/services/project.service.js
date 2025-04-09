@@ -3,8 +3,6 @@ import mongoose from 'mongoose';
 import { exec } from 'child_process';
 import fs from 'fs';
 import os from 'os';
-import { execSync } from 'child_process';
-
 
 export const createProject = async ({
     name, userId
@@ -156,7 +154,7 @@ export const executeCode = async ({ code, language }) => {
     const languageConfig = {
         javascript: { extension: 'js', command: 'node' },
         python: { extension: 'py', command: 'python3' },
-        java: { extension: 'java', command: `javac ${os.tmpdir()}/tempCode.java && java -cp ${os.tmpdir()} tempCode` },
+        java: { extension: 'java', command: 'javac tempCode.java && java tempCode' },
         c: { extension: 'c', command: `gcc ${os.tmpdir()}/tempCode.c -o ${os.tmpdir()}/tempCode && ${os.tmpdir()}/tempCode` },
         cpp: { extension: 'cpp', command: `g++ ${os.tmpdir()}/tempCode.cpp -o ${os.tmpdir()}/tempCode && ${os.tmpdir()}/tempCode` },
     };
