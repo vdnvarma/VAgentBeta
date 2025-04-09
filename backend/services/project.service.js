@@ -3,6 +3,17 @@ import mongoose from 'mongoose';
 import { exec } from 'child_process';
 import fs from 'fs';
 import os from 'os';
+import { execSync } from 'child_process';
+
+try {
+    console.log('Checking installed tools:');
+    console.log('Python:', execSync('python3 --version').toString());
+    console.log('Java:', execSync('javac -version').toString());
+    console.log('GCC:', execSync('gcc --version').toString());
+    console.log('G++:', execSync('g++ --version').toString());
+} catch (err) {
+    console.error('Error checking tools:', err.message);
+}
 
 export const createProject = async ({
     name, userId
@@ -154,7 +165,7 @@ export const executeCode = async ({ code, language }) => {
     const languageConfig = {
         javascript: { extension: 'js', command: 'node' },
         python: { extension: 'py', command: 'python3' },
-        java: { extension: 'java', command: 'javac tempCode.java && java tempCode' },
+        java: { extension: 'java', command: `javac ${os.tmpdir()}/tempCode.java && java -cp ${os.tmpdir()} tempCode` },
         c: { extension: 'c', command: `gcc ${os.tmpdir()}/tempCode.c -o ${os.tmpdir()}/tempCode && ${os.tmpdir()}/tempCode` },
         cpp: { extension: 'cpp', command: `g++ ${os.tmpdir()}/tempCode.cpp -o ${os.tmpdir()}/tempCode && ${os.tmpdir()}/tempCode` },
     };
