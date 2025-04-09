@@ -5,15 +5,6 @@ import fs from 'fs';
 import os from 'os';
 import { execSync } from 'child_process';
 
-try {
-    console.log('Checking installed tools:');
-    console.log('Python:', execSync('python3 --version').toString());
-    console.log('Java:', execSync('javac -version').toString());
-    console.log('GCC:', execSync('gcc --version').toString());
-    console.log('G++:', execSync('g++ --version').toString());
-} catch (err) {
-    console.error('Error checking tools:', err.message);
-}
 
 export const createProject = async ({
     name, userId
