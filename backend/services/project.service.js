@@ -140,7 +140,7 @@ export const updateFileTree = async ({ projectId, fileTree }) => {
     return project;
 }
 
-export const executeCode = async ({ code, language }) => {
+export const executeCode = async ({ code, language, input = '' }) => {
     if (!code) {
         throw new Error('No code provided.');
     }
@@ -154,7 +154,7 @@ export const executeCode = async ({ code, language }) => {
     const languageConfig = {
         javascript: { extension: 'js', command: 'node' },
         python: { extension: 'py', command: 'python3' },
-        java: { extension: 'java', command: 'javac tempCode.java && java tempCode' },
+        java: { extension: 'java', command: `javac ${os.tmpdir()}/tempCode.java && java -cp ${os.tmpdir()} tempCode` },
         c: { extension: 'c', command: `gcc ${os.tmpdir()}/tempCode.c -o ${os.tmpdir()}/tempCode && ${os.tmpdir()}/tempCode` },
         cpp: { extension: 'cpp', command: `g++ ${os.tmpdir()}/tempCode.cpp -o ${os.tmpdir()}/tempCode && ${os.tmpdir()}/tempCode` },
     };
@@ -177,7 +177,7 @@ export const executeCode = async ({ code, language }) => {
 
     // Execute the code using the appropriate command
     return new Promise((resolve, reject) => {
-        exec(config.command, (error, stdout, stderr) => {
+        const child = exec(config.command, (error, stdout, stderr) => {
             try {
                 // Delete the temporary source file
                 if (fs.existsSync(tempFile)) {
@@ -201,5 +201,11 @@ export const executeCode = async ({ code, language }) => {
             console.log('Execution output:', stdout); // Debugging log
             resolve(stdout);
         });
+
+        // Provide input to the program
+        if (input) {
+            child.stdin.write(input);
+            child.stdin.end();
+        }
     });
 };

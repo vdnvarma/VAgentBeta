@@ -141,12 +141,13 @@ export const executeCode = async (req, res) => {
     }
 
     try {
-        const { code, language } = req.body;
+        const { code, language, input } = req.body;
 
-        // Log the received code and language
+        // Log the received code, language, and input
         console.log(`Code received for execution in ${language}:`, code);
+        console.log(`Input provided:`, input);
 
-        const output = await projectService.executeCode({ code, language });
+        const output = await projectService.executeCode({ code, language, input });
 
         return res.status(200).json({ output });
     } catch (err) {
