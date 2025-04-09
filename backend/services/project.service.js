@@ -148,15 +148,24 @@ export const executeCode = async ({ code }) => {
 
     // Save the code to a temporary file
     const tempFile = './tempCode.js';
-    fs.writeFileSync(tempFile, code);
+    try {
+        fs.writeFileSync(tempFile, code);
+    } catch (err) {
+        console.error("Error writing to temp file:", err); // Log file write errors
+        throw new Error("Failed to write code to temp file.");
+    }
 
     // Execute the code using Node.js
     return new Promise((resolve, reject) => {
         exec(`node ${tempFile}`, (error, stdout, stderr) => {
-            fs.unlinkSync(tempFile); // Clean up the temporary file
+            try {
+                fs.unlinkSync(tempFile); // Clean up the temporary file
+            } catch (err) {
+                console.error("Error deleting temp file:", err); // Log file delete errors
+            }
 
             if (error) {
-                console.error("Execution error:", stderr || error.message); // Log the error
+                console.error("Execution error:", stderr || error.message); // Log execution errors
                 return reject(stderr || error.message);
             }
 

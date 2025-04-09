@@ -136,6 +136,7 @@ export const executeCode = async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
+        console.log("Validation errors:", errors.array()); // Log validation errors
         return res.status(400).json({ errors: errors.array() });
     }
 
@@ -147,6 +148,7 @@ export const executeCode = async (req, res) => {
         // Call the service to execute the code
         const output = await projectService.executeCode({ code });
 
+        console.log("Execution output:", output); // Debugging log
         return res.status(200).json({ output });
     } catch (err) {
         console.error("Error in executeCode controller:", err); // Log the error
