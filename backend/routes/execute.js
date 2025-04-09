@@ -1,10 +1,8 @@
-import express from 'express';
+import { Router } from 'express';
 import { exec } from 'child_process';
 import fs from 'fs';
-import { Router } from "express";
 
 const router = Router();
-
 
 router.post('/execute-code', (req, res) => {
     const { code } = req.body;
