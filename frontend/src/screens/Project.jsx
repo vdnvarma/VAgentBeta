@@ -45,6 +45,7 @@ const Project = () => {
     const [ iframeUrl, setIframeUrl ] = useState(null)
 
     const [ runProcess, setRunProcess ] = useState(null)
+    const [ output, setOutput ] = useState(""); // State to store the output of the executed code
 
     const handleUserClick = (id) => {
         setSelectedUserId(prevSelectedUserId => {
@@ -173,6 +174,25 @@ const Project = () => {
         messageBox.current.scrollTop = messageBox.current.scrollHeight
     }
 
+    const runCode = () => {
+        if (!currentFile || !fileTree[currentFile]) {
+            alert("No file selected or file is empty!");
+            return;
+        }
+
+        const codeToRun = fileTree[currentFile].file.contents;
+
+        // Send the code to the backend for execution
+        axios.post('/execute-code', { code: codeToRun })
+            .then((res) => {
+                setOutput(res.data.output); // Set the output from the response
+            })
+            .catch((err) => {
+                console.error(err);
+                setOutput("Error executing code.");
+            });
+    };
+
     return (
         <main className='h-screen w-screen flex'>
             <section className="left relative flex flex-col h-screen min-w-96 bg-slate-300">
@@ -297,6 +317,12 @@ const Project = () => {
                             }
                         </div>
 
+                        <button
+                            onClick={runCode}
+                            className="run-button bg-green-600 text-white px-4 py-2 rounded-md m-2"
+                        >
+                            Run
+                        </button>
                         
                     </div>
                     <div className="bottom flex flex-grow max-w-full shrink overflow-auto">
@@ -333,6 +359,12 @@ const Project = () => {
                                 </div>
                             )
                         }
+                    </div>
+                    <div className="output-section bg-gray-100 p-4">
+                        <h3 className="font-semibold">Output:</h3>
+                        <pre className="bg-black text-white p-2 rounded-md overflow-auto">
+                            {output || "No output yet."}
+                        </pre>
                     </div>
 
                 </div>
