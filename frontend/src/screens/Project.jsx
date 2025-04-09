@@ -5,8 +5,6 @@ import axios from '../config/axios';
 import { initializeSocket, receiveMessage, sendMessage } from '../config/socket';
 import Markdown from 'markdown-to-jsx';
 import hljs from 'highlight.js';
-import fs from 'fs';
-import { exec } from 'child_process';
 
 function SyntaxHighlightedCode(props) {
     const ref = useRef(null)
@@ -261,10 +259,11 @@ const Project = () => {
             return;
         }
 
-        executeCode({ code: codeToRun, language })
-            .then((output) => {
-                console.log('Execution output:', output); // Debugging log
-                setOutput(output); // Display the output
+        // Send the code and language to the backend
+        axios.post('/projects/execute', { code: codeToRun, language })
+            .then((res) => {
+                console.log('Execution output:', res.data.output); // Debugging log
+                setOutput(res.data.output); // Display the output
             })
             .catch((err) => {
                 console.error('Error executing code:', err); // Log the error
