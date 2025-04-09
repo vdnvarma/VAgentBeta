@@ -142,12 +142,14 @@ export const executeCode = async (req, res) => {
     try {
         const { code } = req.body;
 
+        console.log("Code received for execution:", code); // Debugging log
+
         // Call the service to execute the code
         const output = await projectService.executeCode({ code });
 
         return res.status(200).json({ output });
     } catch (err) {
-        console.error(err);
+        console.error("Error in executeCode controller:", err); // Log the error
         res.status(500).json({ error: err.message });
     }
 };

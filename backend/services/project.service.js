@@ -144,6 +144,8 @@ export const executeCode = async ({ code }) => {
         throw new Error('No code provided.');
     }
 
+    console.log("Executing code:", code); // Debugging log
+
     // Save the code to a temporary file
     const tempFile = './tempCode.js';
     fs.writeFileSync(tempFile, code);
@@ -154,9 +156,11 @@ export const executeCode = async ({ code }) => {
             fs.unlinkSync(tempFile); // Clean up the temporary file
 
             if (error) {
+                console.error("Execution error:", stderr || error.message); // Log the error
                 return reject(stderr || error.message);
             }
 
+            console.log("Execution output:", stdout); // Debugging log
             resolve(stdout);
         });
     });
