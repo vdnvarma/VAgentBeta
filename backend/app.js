@@ -19,24 +19,19 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(morgan('dev'));
-app.use(express.json()); // Middleware to parse JSON requests
+app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 app.use(cookieParser());
 
 app.use('/users', userRoutes);
-app.use('/projects', projectRoutes); // Register the project routes
+app.use('/projects', projectRoutes);
 app.use('/ai', aiRoutes);
+
+
 
 app.get('/', (req,res) =>{
     res.send("Hello World");
 });
 
-console.log(app._router.stack); // Logs all registered routes
-
-// Start the server
-const PORT = process.env.PORT;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
 
 export default app;
