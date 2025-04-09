@@ -34,7 +34,7 @@ app.get('/', (req,res) =>{
 console.log(app._router.stack); // Logs all registered routes
 
 // Start the server
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
