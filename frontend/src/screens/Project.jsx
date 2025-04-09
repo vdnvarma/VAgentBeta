@@ -182,10 +182,9 @@ const Project = () => {
 
         const codeToRun = fileTree[currentFile].file.contents;
 
-        // Send the code to the backend for execution
         axios.post('/projects/execute', { code: codeToRun })
             .then((res) => {
-                setOutput(res.data.output); // Set the output from the response
+                setOutput(res.data.output); // Display the output
             })
             .catch((err) => {
                 console.error(err);
