@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     python3-pip
 
 # Set the working directory
-WORKDIR /app
+WORKDIR /app/backend
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
