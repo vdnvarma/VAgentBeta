@@ -12,8 +12,9 @@ connect();
 const app = express();
 
 const corsOptions = {
-    origin: ['https://vagent.onrender.com'], // Add your frontend URL here
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Specify allowed methods
+    origin: 'https://vagent.onrender.com', // Replace with your frontend's URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 };
 
@@ -26,8 +27,6 @@ app.use(cookieParser());
 app.use('/users', userRoutes);
 app.use('/projects', projectRoutes);
 app.use('/ai', aiRoutes);
-
-
 
 app.get('/', (req,res) =>{
     res.send("Hello World");
