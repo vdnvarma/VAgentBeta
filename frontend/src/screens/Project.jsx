@@ -184,10 +184,11 @@ const Project = () => {
 
         axios.post('/projects/execute', { code: codeToRun })
             .then((res) => {
+                console.log("Execution output:", res.data.output); // Debugging log
                 setOutput(res.data.output); // Display the output
             })
             .catch((err) => {
-                console.error(err);
+                console.error("Error executing code:", err); // Log the error
                 setOutput("Error executing code.");
             });
     };

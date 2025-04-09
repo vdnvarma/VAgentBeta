@@ -38,7 +38,6 @@ router.put('/update-file-tree',
 )
 
 router.post('/execute',
-    authMiddleWare.authUser,
     body('code').isString().withMessage('Code is required'),
     projectController.executeCode
 );
