@@ -136,22 +136,22 @@ export const executeCode = async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        console.log("Validation errors:", errors.array()); // Log validation errors
+        console.log('Validation errors:', errors.array()); // Log validation errors
         return res.status(400).json({ errors: errors.array() });
     }
 
     try {
-        const { code } = req.body;
+        const { code, language } = req.body;
 
-        console.log("Code received for execution:", code); // Debugging log
+        console.log(`Code received for execution in ${language}:`, code); // Debugging log
 
         // Call the service to execute the code
-        const output = await projectService.executeCode({ code });
+        const output = await projectService.executeCode({ code, language });
 
-        console.log("Execution output:", output); // Debugging log
+        console.log('Execution output:', output); // Debugging log
         return res.status(200).json({ output });
     } catch (err) {
-        console.error("Error in executeCode controller:", err); // Log the error
+        console.error('Error in executeCode controller:', err); // Log the error
         res.status(500).json({ error: err.message });
     }
 };

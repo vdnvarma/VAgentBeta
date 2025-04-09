@@ -39,6 +39,7 @@ router.put('/update-file-tree',
 
 router.post('/execute',
     body('code').isString().withMessage('Code is required'),
+    body('language').isString().withMessage('Language is required'),
     projectController.executeCode
 );
 

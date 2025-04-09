@@ -139,37 +139,64 @@ export const updateFileTree = async ({ projectId, fileTree }) => {
     return project;
 }
 
-export const executeCode = async ({ code }) => {
+export const executeCode = async ({ code, language }) => {
     if (!code) {
         throw new Error('No code provided.');
     }
 
-    console.log("Executing code:", code); // Debugging log
-
-    // Save the code to a temporary file
-    const tempFile = './tempCode.js';
-    try {
-        fs.writeFileSync(tempFile, code);
-    } catch (err) {
-        console.error("Error writing to temp file:", err); // Log file write errors
-        throw new Error("Failed to write code to temp file.");
+    if (!language) {
+        throw new Error('No language specified.');
     }
 
-    // Execute the code using Node.js
+    console.log(`Executing code in ${language}:`, code); // Debugging log
+
+    // Define the file extension and command based on the language
+    const languageConfig = {
+        javascript: { extension: 'js', command: 'node' },
+        python: { extension: 'py', command: 'python3' },
+        java: { extension: 'java', command: 'javac tempCode.java && java tempCode' },
+        c: { extension: 'c', command: 'gcc tempCode.c -o tempCode && tempCode.exe' }, // Updated for Windows
+        cpp: { extension: 'cpp', command: 'g++ tempCode.cpp -o tempCode && tempCode.exe' }, // Updated for Windows
+    };
+
+    const config = languageConfig[language.toLowerCase()];
+    if (!config) {
+        throw new Error(`Unsupported language: ${language}`);
+    }
+
+    const tempFile = `./tempCode.${config.extension}`;
+
+    try {
+        // Save the code to a temporary file
+        fs.writeFileSync(tempFile, code);
+    } catch (err) {
+        console.error('Error writing to temp file:', err); // Log file write errors
+        throw new Error('Failed to write code to temp file.');
+    }
+
+    // Execute the code using the appropriate command
     return new Promise((resolve, reject) => {
-        exec(`node ${tempFile}`, (error, stdout, stderr) => {
+        exec(config.command, (error, stdout, stderr) => {
             try {
-                fs.unlinkSync(tempFile); // Clean up the temporary file
+                // Delete the temporary source file
+                if (fs.existsSync(tempFile)) {
+                    fs.unlinkSync(tempFile);
+                }
+
+                // Delete the compiled binary for C/C++
+                if (fs.existsSync('./tempCode.exe')) {
+                    fs.unlinkSync('./tempCode.exe');
+                }
             } catch (err) {
-                console.error("Error deleting temp file:", err); // Log file delete errors
+                console.error('Error deleting temp file:', err); // Log file delete errors
             }
 
             if (error) {
-                console.error("Execution error:", stderr || error.message); // Log execution errors
+                console.error('Execution error:', stderr || error.message); // Log execution errors
                 return reject(stderr || error.message);
             }
 
-            console.log("Execution output:", stdout); // Debugging log
+            console.log('Execution output:', stdout); // Debugging log
             resolve(stdout);
         });
     });

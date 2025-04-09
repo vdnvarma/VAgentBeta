@@ -5,7 +5,8 @@ import axios from '../config/axios';
 import { initializeSocket, receiveMessage, sendMessage } from '../config/socket';
 import Markdown from 'markdown-to-jsx';
 import hljs from 'highlight.js';
-
+import fs from 'fs';
+import { exec } from 'child_process';
 
 function SyntaxHighlightedCode(props) {
     const ref = useRef(null)
@@ -22,6 +23,68 @@ function SyntaxHighlightedCode(props) {
     return <code {...props} ref={ref} />
 }
 
+export const executeCode = async ({ code, language }) => {
+    if (!code) {
+        throw new Error('No code provided.');
+    }
+
+    if (!language) {
+        throw new Error('No language specified.');
+    }
+
+    console.log(`Executing code in ${language}:`, code); // Debugging log
+
+    // Define the file extension and command based on the language
+    const languageConfig = {
+        javascript: { extension: 'js', command: 'node' },
+        python: { extension: 'py', command: 'python3' },
+        java: { extension: 'java', command: 'javac tempCode.java && java tempCode' },
+        c: { extension: 'c', command: 'gcc tempCode.c -o tempCode && tempCode.exe' }, // Updated for Windows
+        cpp: { extension: 'cpp', command: 'g++ tempCode.cpp -o tempCode && tempCode.exe' }, // Updated for Windows
+    };
+
+    const config = languageConfig[language.toLowerCase()];
+    if (!config) {
+        throw new Error(`Unsupported language: ${language}`);
+    }
+
+    const tempFile = `./tempCode.${config.extension}`;
+
+    try {
+        // Save the code to a temporary file
+        fs.writeFileSync(tempFile, code);
+    } catch (err) {
+        console.error('Error writing to temp file:', err); // Log file write errors
+        throw new Error('Failed to write code to temp file.');
+    }
+
+    // Execute the code using the appropriate command
+    return new Promise((resolve, reject) => {
+        exec(config.command, (error, stdout, stderr) => {
+            try {
+                // Delete the temporary source file
+                if (fs.existsSync(tempFile)) {
+                    fs.unlinkSync(tempFile);
+                }
+
+                // Delete the compiled binary for C/C++
+                if (fs.existsSync('./tempCode.exe')) {
+                    fs.unlinkSync('./tempCode.exe');
+                }
+            } catch (err) {
+                console.error('Error deleting temp file:', err); // Log file delete errors
+            }
+
+            if (error) {
+                console.error('Execution error:', stderr || error.message); // Log execution errors
+                return reject(stderr || error.message);
+            }
+
+            console.log('Execution output:', stdout); // Debugging log
+            resolve(stdout);
+        });
+    });
+};
 
 const Project = () => {
 
@@ -176,20 +239,36 @@ const Project = () => {
 
     const runCode = () => {
         if (!currentFile || !fileTree[currentFile]) {
-            alert("No file selected or file is empty!");
+            alert('No file selected or file is empty!');
             return;
         }
 
         const codeToRun = fileTree[currentFile].file.contents;
 
-        axios.post('/projects/execute', { code: codeToRun })
-            .then((res) => {
-                console.log("Execution output:", res.data.output); // Debugging log
-                setOutput(res.data.output); // Display the output
+        // Determine the language based on the file extension
+        const fileExtension = currentFile.split('.').pop();
+        const languageMap = {
+            js: 'javascript',
+            py: 'python',
+            java: 'java',
+            c: 'c',
+            cpp: 'cpp',
+        };
+
+        const language = languageMap[fileExtension];
+        if (!language) {
+            alert('Unsupported file type!');
+            return;
+        }
+
+        executeCode({ code: codeToRun, language })
+            .then((output) => {
+                console.log('Execution output:', output); // Debugging log
+                setOutput(output); // Display the output
             })
             .catch((err) => {
-                console.error("Error executing code:", err); // Log the error
-                setOutput("Error executing code.");
+                console.error('Error executing code:', err); // Log the error
+                setOutput('Error executing code.');
             });
     };
 
