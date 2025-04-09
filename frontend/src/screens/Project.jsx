@@ -75,7 +75,7 @@ export const executeCode = async ({ code, language }) => {
 
             if (error) {
                 console.error('Execution error:', stderr || error.message); // Log execution errors
-                return reject(stderr || error.message);
+                return reject(`Execution failed: ${stderr || error.message}`);
             }
 
             console.log('Execution output:', stdout); // Debugging log
@@ -243,7 +243,9 @@ const Project = () => {
 
         const codeToRun = fileTree[currentFile].file.contents;
 
-        // Determine the language based on the file extension
+        // Log the code being sent
+        console.log('Code being sent to backend:', codeToRun);
+
         const fileExtension = currentFile.split('.').pop();
         const languageMap = {
             js: 'javascript',
@@ -259,7 +261,6 @@ const Project = () => {
             return;
         }
 
-        // Send the code and language to the backend
         axios.post('/projects/execute', { code: codeToRun, language })
             .then((res) => {
                 console.log('Execution output:', res.data.output); // Debugging log

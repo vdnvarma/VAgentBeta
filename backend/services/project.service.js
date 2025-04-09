@@ -2,6 +2,7 @@ import projectModel from '../models/project.model.js';
 import mongoose from 'mongoose';
 import { exec } from 'child_process';
 import fs from 'fs';
+import os from 'os';
 
 export const createProject = async ({
     name, userId
@@ -150,13 +151,12 @@ export const executeCode = async ({ code, language }) => {
 
     console.log(`Executing code in ${language}:`, code); // Debugging log
 
-    // Define the file extension and command based on the language
     const languageConfig = {
         javascript: { extension: 'js', command: 'node' },
         python: { extension: 'py', command: 'python3' },
         java: { extension: 'java', command: 'javac tempCode.java && java tempCode' },
-        c: { extension: 'c', command: 'gcc tempCode.c -o tempCode && tempCode.exe' }, // Updated for Windows
-        cpp: { extension: 'cpp', command: 'g++ tempCode.cpp -o tempCode && tempCode.exe' }, // Updated for Windows
+        c: { extension: 'c', command: `gcc ${os.tmpdir()}/tempCode.c -o ${os.tmpdir()}/tempCode && ${os.tmpdir()}/tempCode` },
+        cpp: { extension: 'cpp', command: `g++ ${os.tmpdir()}/tempCode.cpp -o ${os.tmpdir()}/tempCode && ${os.tmpdir()}/tempCode` },
     };
 
     const config = languageConfig[language.toLowerCase()];
@@ -164,11 +164,12 @@ export const executeCode = async ({ code, language }) => {
         throw new Error(`Unsupported language: ${language}`);
     }
 
-    const tempFile = `./tempCode.${config.extension}`;
+    const tempFile = `${os.tmpdir()}/tempCode.${config.extension}`;
 
     try {
         // Save the code to a temporary file
         fs.writeFileSync(tempFile, code);
+        console.log(`Code written to temporary file: ${tempFile}`);
     } catch (err) {
         console.error('Error writing to temp file:', err); // Log file write errors
         throw new Error('Failed to write code to temp file.');
@@ -184,8 +185,9 @@ export const executeCode = async ({ code, language }) => {
                 }
 
                 // Delete the compiled binary for C/C++
-                if (fs.existsSync('./tempCode.exe')) {
-                    fs.unlinkSync('./tempCode.exe');
+                const compiledBinary = `${os.tmpdir()}/tempCode`;
+                if (fs.existsSync(compiledBinary)) {
+                    fs.unlinkSync(compiledBinary);
                 }
             } catch (err) {
                 console.error('Error deleting temp file:', err); // Log file delete errors
