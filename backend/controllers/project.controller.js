@@ -131,3 +131,23 @@ export const updateFileTree = async (req, res) => {
     }
 
 }
+
+export const executeCode = async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+        const { code } = req.body;
+
+        // Call the service to execute the code
+        const output = await projectService.executeCode({ code });
+
+        return res.status(200).json({ output });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+};

@@ -27,7 +27,7 @@ app.use(cookieParser());
 app.use('/users', userRoutes);
 app.use('/projects', projectRoutes);
 app.use('/ai', aiRoutes);
-app.use('/execute-code', executeRoute);
+
 
 
 app.get('/', (req,res) =>{

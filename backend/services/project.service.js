@@ -1,5 +1,7 @@
 import projectModel from '../models/project.model.js';
 import mongoose from 'mongoose';
+import { exec } from 'child_process';
+import fs from 'fs';
 
 export const createProject = async ({
     name, userId
@@ -136,3 +138,26 @@ export const updateFileTree = async ({ projectId, fileTree }) => {
 
     return project;
 }
+
+export const executeCode = async ({ code }) => {
+    if (!code) {
+        throw new Error('No code provided.');
+    }
+
+    // Save the code to a temporary file
+    const tempFile = './tempCode.js';
+    fs.writeFileSync(tempFile, code);
+
+    // Execute the code using Node.js
+    return new Promise((resolve, reject) => {
+        exec(`node ${tempFile}`, (error, stdout, stderr) => {
+            fs.unlinkSync(tempFile); // Clean up the temporary file
+
+            if (error) {
+                return reject(stderr || error.message);
+            }
+
+            resolve(stdout);
+        });
+    });
+};

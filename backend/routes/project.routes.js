@@ -37,5 +37,10 @@ router.put('/update-file-tree',
     projectController.updateFileTree
 )
 
+router.post('/execute',
+    authMiddleWare.authUser,
+    body('code').isString().withMessage('Code is required'),
+    projectController.executeCode
+);
 
 export default router;
