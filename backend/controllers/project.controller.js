@@ -131,3 +131,89 @@ export const updateFileTree = async (req, res) => {
     }
 
 }
+
+export const deleteProject = async (req, res) => {
+    const { projectId } = req.params;
+
+    try {
+        const loggedInUser = await userModel.findOne({
+            email: req.user.email
+        });
+
+        const deletedProject = await projectService.deleteProject({
+            projectId,
+            userId: loggedInUser._id
+        });
+
+        return res.status(200).json({
+            message: "Project deleted successfully",
+            project: deletedProject
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({ error: err.message });
+    }
+}
+
+export const updateProjectName = async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+        const { projectId, name } = req.body;
+        
+        const loggedInUser = await userModel.findOne({
+            email: req.user.email
+        });
+
+        const updatedProject = await projectService.updateProjectName({
+            projectId,
+            name,
+            userId: loggedInUser._id
+        });
+
+        return res.status(200).json({
+            message: "Project name updated successfully",
+            project: updatedProject
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({ error: err.message });
+    }
+}
+
+export const removeUserFromProject = async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+        const { projectId, userToRemove } = req.body;
+        
+        const loggedInUser = await userModel.findOne({
+            email: req.user.email
+        });
+
+        const updatedProject = await projectService.removeUserFromProject({
+            projectId,
+            userToRemove,
+            userId: loggedInUser._id
+        });
+
+        return res.status(200).json({
+            message: "User removed from project successfully",
+            project: updatedProject
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({ error: err.message });
+    }
+}

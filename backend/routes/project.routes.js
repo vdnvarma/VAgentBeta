@@ -37,5 +37,23 @@ router.put('/update-file-tree',
     projectController.updateFileTree
 )
 
+router.delete('/delete/:projectId',
+    authMiddleWare.authUser,
+    projectController.deleteProject
+)
+
+router.put('/update-name',
+    authMiddleWare.authUser,
+    body('projectId').isString().withMessage('Project ID is required'),
+    body('name').isString().withMessage('Name is required'),
+    projectController.updateProjectName
+)
+
+router.put('/remove-user',
+    authMiddleWare.authUser,
+    body('projectId').isString().withMessage('Project ID is required'),
+    body('userToRemove').isString().withMessage('User ID to remove is required'),
+    projectController.removeUserFromProject
+)
 
 export default router;

@@ -140,3 +140,137 @@ export const updateFileTree = async ({ projectId, fileTree }) => {
 
     return project;
 }
+
+export const deleteProject = async ({ projectId, userId }) => {
+    if (!projectId) {
+        throw new Error("projectId is required");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(projectId)) {
+        throw new Error("Invalid projectId");
+    }
+
+    if (!userId) {
+        throw new Error("userId is required");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        throw new Error("Invalid userId");
+    }
+
+    // Check if user is the creator (first user in the users array)
+    const project = await projectModel.findOne({ _id: projectId });
+    
+    if (!project) {
+        throw new Error("Project not found");
+    }
+
+    // Ensure the user is the creator (first user in the array)
+    if (project.users[0].toString() !== userId.toString()) {
+        throw new Error("Only the project creator can delete the project");
+    }
+
+    const deletedProject = await projectModel.findByIdAndDelete(projectId);
+    
+    return deletedProject;
+}
+
+export const updateProjectName = async ({ projectId, name, userId }) => {
+    if (!projectId) {
+        throw new Error("projectId is required");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(projectId)) {
+        throw new Error("Invalid projectId");
+    }
+
+    if (!name) {
+        throw new Error("name is required");
+    }
+
+    if (!userId) {
+        throw new Error("userId is required");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        throw new Error("Invalid userId");
+    }
+
+    // Check if user is the creator (first user in the users array)
+    const project = await projectModel.findOne({ _id: projectId });
+    
+    if (!project) {
+        throw new Error("Project not found");
+    }
+
+    // Ensure the user is the creator (first user in the array)
+    if (project.users[0].toString() !== userId.toString()) {
+        throw new Error("Only the project creator can update the project name");
+    }
+
+    try {
+        const updatedProject = await projectModel.findOneAndUpdate(
+            { _id: projectId },
+            { name },
+            { new: true }
+        );
+
+        return updatedProject;
+    } catch (error) {
+        if (error.code === 11000) {
+            throw new Error('Project name already exists');
+        }
+        throw error;
+    }
+}
+
+export const removeUserFromProject = async ({ projectId, userToRemove, userId }) => {
+    if (!projectId) {
+        throw new Error("projectId is required");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(projectId)) {
+        throw new Error("Invalid projectId");
+    }
+
+    if (!userToRemove) {
+        throw new Error("userToRemove is required");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userToRemove)) {
+        throw new Error("Invalid userToRemove");
+    }
+
+    if (!userId) {
+        throw new Error("userId is required");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        throw new Error("Invalid userId");
+    }
+
+    // Check if the requesting user is the creator
+    const project = await projectModel.findOne({ _id: projectId });
+    
+    if (!project) {
+        throw new Error("Project not found");
+    }
+
+    // Check if user is the creator (first user in the array)
+    if (project.users[0].toString() !== userId.toString()) {
+        throw new Error("Only the project creator can remove collaborators");
+    }
+
+    // Cannot remove the creator (first user)
+    if (project.users[0].toString() === userToRemove.toString()) {
+        throw new Error("Cannot remove the project creator");
+    }
+
+    const updatedProject = await projectModel.findOneAndUpdate(
+        { _id: projectId },
+        { $pull: { users: userToRemove } },
+        { new: true }
+    ).populate('users');
+
+    return updatedProject;
+}

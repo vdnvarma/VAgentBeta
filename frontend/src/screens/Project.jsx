@@ -26,6 +26,7 @@ function SyntaxHighlightedCode(props) {
 const Project = () => {
 
     const location = useLocation()
+    const navigate = useNavigate();
 
     const [ isSidePanelOpen, setIsSidePanelOpen ] = useState(false)
     const [ isModalOpen, setIsModalOpen ] = useState(false)
@@ -46,6 +47,9 @@ const Project = () => {
 
     const [ runProcess, setRunProcess ] = useState(null)
     const [ output, setOutput ] = useState(""); // State to store the output of the executed code
+    
+    // Check if current user is the creator of the project
+    const [isCreator, setIsCreator] = useState(false);
 
     const handleUserClick = (id) => {
         setSelectedUserId(prevSelectedUserId => {
@@ -62,6 +66,9 @@ const Project = () => {
 
     }
 
+    const goBack = () => {
+        navigate('/');
+    }
 
     function addCollaborators() {
 
@@ -77,6 +84,19 @@ const Project = () => {
         })
 
     }
+
+    const removeCollaborator = (collaboratorId) => {
+        if (!isCreator) return;
+
+        axios.put("/projects/remove-user", {
+            projectId: project._id,
+            userToRemove: collaboratorId
+        }).then(res => {
+            setProject(res.data.project);
+        }).catch(err => {
+            console.log(err);
+        });
+    };
 
     const send = () => {
 
@@ -142,6 +162,13 @@ const Project = () => {
 
             setProject(res.data.project)
             setFileTree(res.data.project.fileTree || {})
+            
+            // Check if the current user is the creator (first user in the users array)
+            if (res.data.project.users && res.data.project.users.length > 0) {
+                if (res.data.project.users[0]._id === user._id) {
+                    setIsCreator(true);
+                }
+            }
         })
 
         axios.get('/users/all').then(res => {
@@ -180,10 +207,15 @@ const Project = () => {
         <main className='h-screen w-screen flex'>
             <section className="left relative flex flex-col h-screen min-w-96 bg-slate-300">
                 <header className='flex justify-between items-center p-2 px-4 w-full bg-slate-100 absolute z-10 top-0'>
-                    <button className='flex gap-2' onClick={() => setIsModalOpen(true)}>
-                        <i className="ri-add-fill mr-1"></i>
-                        <p>Add collaborator</p>
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button className="back-button p-2" onClick={goBack}>
+                            <i className="ri-arrow-left-line"></i>
+                        </button>
+                        <button className='flex gap-2' onClick={() => setIsModalOpen(true)}>
+                            <i className="ri-add-fill mr-1"></i>
+                            <p>Add collaborator</p>
+                        </button>
+                    </div>
                     <button onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} className='p-2'>
                         <i className="ri-group-fill"></i>
                     </button>
@@ -228,19 +260,29 @@ const Project = () => {
                     </header>
                     <div className="users flex flex-col gap-2">
 
-                        {project.users && project.users.map(user => {
-
-
+                        {project.users && project.users.map((collaborator, index) => {
+                            const isProjectCreator = index === 0;
                             return (
-                                <div className="user cursor-pointer hover:bg-slate-200 p-2 flex gap-2 items-center">
-                                    <div className='aspect-square rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600'>
-                                        <i className="ri-user-fill absolute"></i>
+                                <div key={collaborator._id} className="user p-2 flex justify-between items-center hover:bg-slate-200">
+                                    <div className="flex gap-2 items-center">
+                                        <div className='aspect-square rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600'>
+                                            <i className="ri-user-fill absolute"></i>
+                                        </div>
+                                        <div>
+                                            <h1 className='font-semibold text-lg'>{collaborator.email}</h1>
+                                            {isProjectCreator && <span className='text-xs text-gray-500'>Creator</span>}
+                                        </div>
                                     </div>
-                                    <h1 className='font-semibold text-lg'>{user.email}</h1>
+                                    {isCreator && !isProjectCreator && collaborator._id !== user._id && (
+                                        <button 
+                                            onClick={() => removeCollaborator(collaborator._id)}
+                                            className="remove-user p-2 text-red-500 hover:bg-red-100 rounded-full"
+                                        >
+                                            <i className="ri-close-circle-line"></i>
+                                        </button>
+                                    )}
                                 </div>
-                            )
-
-
+                            );
                         })}
                     </div>
                 </div>
