@@ -2,7 +2,7 @@ import projectModel from '../models/project.model.js';
 import * as projectService from '../services/project.service.js';
 import userModel from '../models/user.model.js';
 import { validationResult } from 'express-validator';
-import { exec } from 'child_process';
+
 
 export const createProject = async (req, res) => {
 
@@ -131,27 +131,3 @@ export const updateFileTree = async (req, res) => {
     }
 
 }
-
-export const executeCode = async (req, res) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        console.log('Validation errors:', errors.array()); // Log validation errors
-        return res.status(400).json({ errors: errors.array() });
-    }
-
-    try {
-        const { code, language, input } = req.body;
-
-        // Log the received code, language, and input
-        console.log(`Code received for execution in ${language}:`, code);
-        console.log(`Input provided:`, input);
-
-        const output = await projectService.executeCode({ code, language, input });
-
-        return res.status(200).json({ output });
-    } catch (err) {
-        console.error('Error in executeCode controller:', err); // Log the error
-        res.status(500).json({ error: err.message });
-    }
-};

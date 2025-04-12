@@ -21,68 +21,7 @@ function SyntaxHighlightedCode(props) {
     return <code {...props} ref={ref} />
 }
 
-export const executeCode = async ({ code, language }) => {
-    if (!code) {
-        throw new Error('No code provided.');
-    }
 
-    if (!language) {
-        throw new Error('No language specified.');
-    }
-
-    console.log(`Executing code in ${language}:`, code); // Debugging log
-
-    // Define the file extension and command based on the language
-    const languageConfig = {
-        javascript: { extension: 'js', command: 'node' },
-        python: { extension: 'py', command: 'python3' },
-        java: { extension: 'java', command: 'javac tempCode.java && java tempCode' },
-        c: { extension: 'c', command: 'gcc tempCode.c -o tempCode && tempCode.exe' }, // Updated for Windows
-        cpp: { extension: 'cpp', command: 'g++ tempCode.cpp -o tempCode && tempCode.exe' }, // Updated for Windows
-    };
-
-    const config = languageConfig[language.toLowerCase()];
-    if (!config) {
-        throw new Error(`Unsupported language: ${language}`);
-    }
-
-    const tempFile = `./tempCode.${config.extension}`;
-
-    try {
-        // Save the code to a temporary file
-        fs.writeFileSync(tempFile, code);
-    } catch (err) {
-        console.error('Error writing to temp file:', err); // Log file write errors
-        throw new Error('Failed to write code to temp file.');
-    }
-
-    // Execute the code using the appropriate command
-    return new Promise((resolve, reject) => {
-        exec(config.command, (error, stdout, stderr) => {
-            try {
-                // Delete the temporary source file
-                if (fs.existsSync(tempFile)) {
-                    fs.unlinkSync(tempFile);
-                }
-
-                // Delete the compiled binary for C/C++
-                if (fs.existsSync('./tempCode.exe')) {
-                    fs.unlinkSync('./tempCode.exe');
-                }
-            } catch (err) {
-                console.error('Error deleting temp file:', err); // Log file delete errors
-            }
-
-            if (error) {
-                console.error('Execution error:', stderr || error.message); // Log execution errors
-                return reject(`Execution failed: ${stderr || error.message}`);
-            }
-
-            console.log('Execution output:', stdout); // Debugging log
-            resolve(stdout);
-        });
-    });
-};
 
 const Project = () => {
 
@@ -235,42 +174,7 @@ const Project = () => {
         messageBox.current.scrollTop = messageBox.current.scrollHeight
     }
 
-    const runCode = () => {
-        if (!currentFile || !fileTree[currentFile]) {
-            alert('No file selected or file is empty!');
-            return;
-        }
-
-        const codeToRun = fileTree[currentFile].file.contents;
-
-        // Log the code being sent
-        console.log('Code being sent to backend:', codeToRun);
-
-        const fileExtension = currentFile.split('.').pop();
-        const languageMap = {
-            js: 'javascript',
-            py: 'python',
-            java: 'java',
-            c: 'c',
-            cpp: 'cpp',
-        };
-
-        const language = languageMap[fileExtension];
-        if (!language) {
-            alert('Unsupported file type!');
-            return;
-        }
-
-        axios.post('/projects/execute', { code: codeToRun, language })
-            .then((res) => {
-                console.log('Execution output:', res.data.output); // Debugging log
-                setOutput(res.data.output); // Display the output
-            })
-            .catch((err) => {
-                console.error('Error executing code:', err); // Log the error
-                setOutput('Error executing code.');
-            });
-    };
+    
 
     return (
         <main className='h-screen w-screen flex'>
@@ -396,12 +300,7 @@ const Project = () => {
                             }
                         </div>
 
-                        <button
-                            onClick={runCode}
-                            className="run-button bg-green-600 text-white px-4 py-2 rounded-md m-2"
-                        >
-                            Run
-                        </button>
+                        
                         
                     </div>
                     <div className="bottom flex flex-grow max-w-full shrink overflow-auto">
@@ -439,12 +338,7 @@ const Project = () => {
                             )
                         }
                     </div>
-                    <div className="output-section bg-gray-100 p-4">
-                        <h3 className="font-semibold">Output:</h3>
-                        <pre className="bg-black text-white p-2 rounded-md overflow-auto">
-                            {output || "No output yet."}
-                        </pre>
-                    </div>
+                    
 
                 </div>
 

@@ -37,11 +37,5 @@ router.put('/update-file-tree',
     projectController.updateFileTree
 )
 
-router.post('/execute',
-    body('code').isString().withMessage('Code is required'),
-    body('language').isString().withMessage('Language is required'),
-    body('input').optional().isString().withMessage('Input must be a string'),
-    projectController.executeCode
-);
 
 export default router;
