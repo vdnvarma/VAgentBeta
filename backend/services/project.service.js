@@ -274,3 +274,46 @@ export const removeUserFromProject = async ({ projectId, userToRemove, userId })
 
     return updatedProject;
 }
+
+export const leaveProject = async ({ projectId, userId }) => {
+    if (!projectId) {
+        throw new Error("projectId is required");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(projectId)) {
+        throw new Error("Invalid projectId");
+    }
+
+    if (!userId) {
+        throw new Error("userId is required");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        throw new Error("Invalid userId");
+    }
+
+    // Check if the project exists
+    const project = await projectModel.findOne({ _id: projectId });
+    
+    if (!project) {
+        throw new Error("Project not found");
+    }
+
+    // Check if the user is actually in the project
+    if (!project.users.includes(userId)) {
+        throw new Error("User is not a member of this project");
+    }
+
+    // Cannot leave if the user is the creator (first user)
+    if (project.users[0].toString() === userId.toString()) {
+        throw new Error("The project creator cannot leave the project");
+    }
+
+    const updatedProject = await projectModel.findOneAndUpdate(
+        { _id: projectId },
+        { $pull: { users: userId } },
+        { new: true }
+    ).populate('users');
+
+    return updatedProject;
+}

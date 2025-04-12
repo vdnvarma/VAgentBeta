@@ -98,6 +98,20 @@ const Project = () => {
         });
     };
 
+    const leaveProject = () => {
+        const confirmed = window.confirm("Are you sure you want to leave this project?");
+        if (!confirmed) return;
+
+        axios.put("/projects/leave-project", {
+            projectId: project._id
+        }).then(res => {
+            // Navigate back to home after leaving
+            navigate('/');
+        }).catch(err => {
+            console.log(err);
+        });
+    };
+
     const send = () => {
 
         sendMessage('project-message', {
@@ -216,9 +230,20 @@ const Project = () => {
                             <p>Add collaborator</p>
                         </button>
                     </div>
-                    <button onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} className='p-2'>
-                        <i className="ri-group-fill"></i>
-                    </button>
+                    <div className="flex items-center gap-2">
+                        {!isCreator && (
+                            <button 
+                                onClick={leaveProject}
+                                className="leave-project-btn text-red-500 flex items-center gap-1 px-2 py-1 rounded hover:bg-red-100"
+                            >
+                                <i className="ri-logout-box-line"></i>
+                                <span>Leave</span>
+                            </button>
+                        )}
+                        <button onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} className='p-2'>
+                            <i className="ri-group-fill"></i>
+                        </button>
+                    </div>
                 </header>
                 <div className="conversation-area pt-14 pb-10 flex-grow flex flex-col h-full relative">
 
@@ -262,6 +287,7 @@ const Project = () => {
 
                         {project.users && project.users.map((collaborator, index) => {
                             const isProjectCreator = index === 0;
+                            const isCurrentUser = collaborator._id === user._id;
                             return (
                                 <div key={collaborator._id} className="user p-2 flex justify-between items-center hover:bg-slate-200">
                                     <div className="flex gap-2 items-center">
@@ -271,16 +297,28 @@ const Project = () => {
                                         <div>
                                             <h1 className='font-semibold text-lg'>{collaborator.email}</h1>
                                             {isProjectCreator && <span className='text-xs text-gray-500'>Creator</span>}
+                                            {isCurrentUser && !isProjectCreator && <span className='text-xs text-blue-500'>You</span>}
                                         </div>
                                     </div>
-                                    {isCreator && !isProjectCreator && collaborator._id !== user._id && (
-                                        <button 
-                                            onClick={() => removeCollaborator(collaborator._id)}
-                                            className="remove-user p-2 text-red-500 hover:bg-red-100 rounded-full"
-                                        >
-                                            <i className="ri-close-circle-line"></i>
-                                        </button>
-                                    )}
+                                    <div>
+                                        {isCreator && !isProjectCreator && !isCurrentUser && (
+                                            <button 
+                                                onClick={() => removeCollaborator(collaborator._id)}
+                                                className="remove-user p-2 text-red-500 hover:bg-red-100 rounded-full"
+                                            >
+                                                <i className="ri-close-circle-line"></i>
+                                            </button>
+                                        )}
+                                        {isCurrentUser && !isProjectCreator && (
+                                            <button 
+                                                onClick={leaveProject}
+                                                className="leave-project-btn text-red-500 flex items-center gap-1 px-2 py-1 rounded hover:bg-red-100"
+                                            >
+                                                <i className="ri-logout-box-line"></i>
+                                                <span>Leave</span>
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             );
                         })}

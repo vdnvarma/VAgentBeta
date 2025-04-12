@@ -56,4 +56,10 @@ router.put('/remove-user',
     projectController.removeUserFromProject
 )
 
+router.put('/leave-project',
+    authMiddleWare.authUser,
+    body('projectId').isString().withMessage('Project ID is required'),
+    projectController.leaveProject
+)
+
 export default router;
