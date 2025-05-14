@@ -12,7 +12,7 @@ connect();
 const app = express();
 
 const corsOptions = {
-    origin: ['http://localhost:5173', 'https://vagent.onrender.com'], // Replace with your frontend's URL
+    origin: ['https://vagent.onrender.com'], // Replace with your frontend's URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
     allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
