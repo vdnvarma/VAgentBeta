@@ -82,16 +82,16 @@ const Home = () => {
     };
 
     useEffect(() => {
-        axios.get('/projects/all').then((res) => {
-            setProjects(res.data.projects)
-            console.log(user);
-            
+        if (!user) return;
 
-        }).catch(err => {
-            console.log(err)
-        })
-
-    }, [])
+        axios.get('/projects/all')
+            .then((res) => {
+                setProjects(res.data.projects);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }, [user]);
 
     return (
         <main className='p-4'>
