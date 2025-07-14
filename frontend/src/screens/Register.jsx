@@ -1,4 +1,3 @@
-
 import React, { useState, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { UserContext } from '../context/user.context'
@@ -33,41 +32,43 @@ const Register = () => {
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900">
-            <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
-                <h2 className="text-2xl font-bold text-white mb-6">Register</h2>
-                <form
-                    onSubmit={submitHandler}
-                >
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200">
+            <div className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-md flex flex-col items-center">
+                <div className="mb-6 flex flex-col items-center">
+                    <i className="ri-robot-2-line text-5xl text-blue-500 mb-2"></i>
+                    <h2 className="text-3xl font-extrabold text-blue-700 mb-1">VAgent Register</h2>
+                    <p className="text-gray-400">Create your account to get started.</p>
+                </div>
+                <form onSubmit={submitHandler} className="w-full">
                     <div className="mb-4">
-                        <label className="block text-gray-400 mb-2" htmlFor="email">Email</label>
+                        <label className="block text-gray-700 font-semibold mb-2" htmlFor="email">Email</label>
                         <input
                             onChange={(e) => setEmail(e.target.value)}
                             type="email"
                             id="email"
-                            className="w-full p-3 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full p-3 rounded bg-blue-50 text-gray-700 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
                             placeholder="Enter your email"
                         />
                     </div>
                     <div className="mb-6">
-                        <label className="block text-gray-400 mb-2" htmlFor="password">Password</label>
+                        <label className="block text-gray-700 font-semibold mb-2" htmlFor="password">Password</label>
                         <input
-                            onChange={(e) => setPassword(e.target.value)} s
+                            onChange={(e) => setPassword(e.target.value)}
                             type="password"
                             id="password"
-                            className="w-full p-3 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full p-3 rounded bg-blue-50 text-gray-700 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
                             placeholder="Enter your password"
                         />
                     </div>
                     <button
                         type="submit"
-                        className="w-full p-3 rounded bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-3 rounded bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold hover:from-blue-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-lg transition-all"
                     >
-                        Register
+                        <i className="ri-user-add-line mr-2"></i>Register
                     </button>
                 </form>
-                <p className="text-gray-400 mt-4">
-                    Already have an account? <Link to="/login" className="text-blue-500 hover:underline">Login</Link>
+                <p className="text-gray-500 mt-4">
+                    Already have an account? <Link to="/login" className="text-blue-600 hover:underline font-semibold">Login</Link>
                 </p>
             </div>
         </div>
