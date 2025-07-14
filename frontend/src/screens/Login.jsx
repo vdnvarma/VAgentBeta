@@ -37,7 +37,7 @@ const Login = () => {
             <div className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-md flex flex-col items-center">
                 <div className="mb-6 flex flex-col items-center">
                     <i className="ri-robot-2-line text-5xl text-blue-500 mb-2"></i>
-                    <h2 className="text-3xl font-extrabold text-blue-700 mb-1">VBot Login</h2>
+                    <h2 className="text-3xl font-extrabold text-blue-700 mb-1">VAgent Login</h2>
                     <p className="text-gray-400">Welcome back! Please login to continue.</p>
                 </div>
                 <form

@@ -102,6 +102,10 @@ const Home = () => {
 
     return (
         <main className='relative min-h-screen bg-gradient-to-br from-blue-50 to-purple-100 p-4'>
+            {/* Header */}
+            <header className="w-full flex justify-center items-center py-8 mb-4">
+                <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 drop-shadow-lg tracking-wide">VAgent</h1>
+            </header>
             {/* Logout Button */}
             <button
                 onClick={handleLogout}
@@ -158,20 +162,20 @@ const Home = () => {
             </div>
 
             {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-md shadow-md w-1/3">
-                        <h2 className="text-xl mb-4">Create New Project</h2>
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-30">
+                    <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-lg border-2 border-blue-200">
+                        <h2 className="text-2xl font-bold text-blue-700 mb-6 text-center">Create New Project</h2>
                         <form onSubmit={createProject}>
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700">Project Name</label>
+                            <div className="mb-6">
+                                <label className="block text-base font-semibold text-gray-700 mb-2">Project Name</label>
                                 <input
                                     onChange={(e) => setProjectName(e.target.value)}
                                     value={projectName}
-                                    type="text" className="mt-1 block w-full p-2 border border-gray-300 rounded-md" required />
+                                    type="text" className="mt-1 block w-full p-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-400" required />
                             </div>
-                            <div className="flex justify-end">
-                                <button type="button" className="mr-2 px-4 py-2 bg-gray-300 rounded-md" onClick={() => setIsModalOpen(false)}>Cancel</button>
-                                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md">Create</button>
+                            <div className="flex justify-end gap-2">
+                                <button type="button" className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all" onClick={() => setIsModalOpen(false)}>Cancel</button>
+                                <button type="submit" className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-bold shadow hover:from-blue-600 hover:to-purple-600 transition-all">Create</button>
                             </div>
                         </form>
                     </div>
@@ -179,24 +183,24 @@ const Home = () => {
             )}
 
             {isEditModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-md shadow-md w-1/3">
-                        <h2 className="text-xl mb-4">Edit Project</h2>
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-30">
+                    <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-lg border-2 border-purple-200">
+                        <h2 className="text-2xl font-bold text-purple-700 mb-6 text-center">Edit Project</h2>
                         <form onSubmit={updateProject}>
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700">Project Name</label>
+                            <div className="mb-6">
+                                <label className="block text-base font-semibold text-gray-700 mb-2">Project Name</label>
                                 <input
                                     onChange={(e) => setProjectName(e.target.value)}
                                     value={projectName}
-                                    type="text" className="mt-1 block w-full p-2 border border-gray-300 rounded-md" required />
+                                    type="text" className="mt-1 block w-full p-3 border border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-400" required />
                             </div>
-                            <div className="flex justify-end">
-                                <button type="button" className="mr-2 px-4 py-2 bg-gray-300 rounded-md" onClick={() => {
+                            <div className="flex justify-end gap-2">
+                                <button type="button" className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all" onClick={() => {
                                     setIsEditModalOpen(false);
                                     setSelectedProject(null);
                                     setProjectName('');
                                 }}>Cancel</button>
-                                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md">Update</button>
+                                <button type="submit" className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-bold shadow hover:from-purple-600 hover:to-blue-600 transition-all">Update</button>
                             </div>
                         </form>
                     </div>

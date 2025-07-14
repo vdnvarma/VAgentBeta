@@ -218,8 +218,12 @@ const Project = () => {
     
 
     return (
-        <main className='h-screen w-screen flex'>
-            <section className="left relative flex flex-col h-screen min-w-96 bg-slate-300">
+        <main className='h-screen w-screen flex bg-gradient-to-br from-blue-50 to-purple-100'>
+            {/* Header */}
+            <header className="w-full absolute top-0 left-0 flex justify-center items-center py-8 z-30 pointer-events-none">
+                <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 drop-shadow-lg tracking-wide pointer-events-auto">VAgent</h1>
+            </header>
+            <section className="left relative flex flex-col h-screen min-w-96 bg-white/80 rounded-tr-3xl rounded-br-3xl shadow-xl border-r-2 border-blue-200 mt-20 ml-4 mb-4">
                 <header className='flex justify-between items-center p-2 px-4 w-full bg-slate-100 absolute z-10 top-0'>
                     <div className="flex items-center gap-2">
                         <button className="back-button p-2" onClick={goBack}>
@@ -245,13 +249,13 @@ const Project = () => {
                         </button>
                     </div>
                 </header>
-                <div className="conversation-area pt-14 pb-10 flex-grow flex flex-col h-full relative">
+                <div className="conversation-area pt-14 pb-10 flex-grow flex flex-col h-full relative rounded-2xl bg-white/90 shadow-inner mx-4 my-4">
 
                     <div
                         ref={messageBox}
-                        className="message-box p-1 flex-grow flex flex-col gap-1 overflow-auto max-h-full scrollbar-hide">
+                        className="message-box p-4 flex-grow flex flex-col gap-3 overflow-auto max-h-full scrollbar-hide">
                         {messages.map((msg, index) => (
-                            <div key={index} className={`${msg.sender._id === 'ai' ? 'max-w-80' : 'max-w-52'} ${msg.sender._id == user._id.toString() && 'ml-auto'}  message flex flex-col p-2 bg-slate-50 w-fit rounded-md`}>
+                            <div key={index} className={`${msg.sender._id === 'ai' ? 'max-w-80' : 'max-w-52'} ${msg.sender._id == user._id.toString() && 'ml-auto'}  message flex flex-col p-3 bg-gradient-to-r from-blue-100 to-purple-100 w-fit rounded-xl shadow`}>
                                 <small className='opacity-65 text-xs'>{msg.sender.email}</small>
                                 <div className='text-sm'>
                                     {msg.sender._id === 'ai' ?
@@ -262,7 +266,7 @@ const Project = () => {
                         ))}
                     </div>
 
-                    <div className="inputField w-full flex absolute bottom-0">
+                    <div className="inputField w-full flex absolute bottom-0 bg-white/80 rounded-b-2xl shadow-inner p-2">
                         <input
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
@@ -272,7 +276,7 @@ const Project = () => {
                             className='px-5 bg-slate-950 text-white'><i className="ri-send-plane-fill"></i></button>
                     </div>
                 </div>
-                <div className={`sidePanel w-full h-full flex flex-col gap-2 bg-slate-50 absolute transition-all ${isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'} top-0`}>
+                <div className={`sidePanel w-full h-full flex flex-col gap-2 bg-white/90 absolute transition-all ${isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'} top-0 rounded-2xl shadow-lg border-l-2 border-blue-200`}>
                     <header className='flex justify-between items-center px-4 p-2 bg-slate-200'>
 
                         <h1
@@ -326,10 +330,10 @@ const Project = () => {
                 </div>
             </section>
 
-            <section className="right  bg-red-50 flex-grow h-full flex">
+            <section className="right flex-grow h-full flex">
 
-                <div className="explorer h-full max-w-64 min-w-52 bg-slate-200">
-                    <div className="file-tree w-full">
+                <div className="explorer h-full max-w-64 min-w-52 bg-white/80 rounded-2xl shadow-lg m-4 border-2 border-blue-100">
+                    <div className="file-tree w-full p-2">
                         {
                             Object.keys(fileTree).map((file, index) => (
                                 <button
@@ -338,7 +342,7 @@ const Project = () => {
                                         setCurrentFile(file)
                                         setOpenFiles([ ...new Set([ ...openFiles, file ]) ])
                                     }}
-                                    className="tree-element cursor-pointer p-2 px-4 flex items-center gap-2 bg-slate-300 w-full">
+                                    className="tree-element cursor-pointer p-2 px-4 flex items-center gap-2 bg-gradient-to-r from-blue-100 to-purple-100 w-full rounded-lg mb-2 shadow hover:bg-blue-200 transition-all">
                                     <p
                                         className='font-semibold text-lg'
                                     >{file}</p>
@@ -350,7 +354,7 @@ const Project = () => {
                 </div>
 
 
-                <div className="code-editor flex flex-col flex-grow h-full shrink">
+                <div className="code-editor flex flex-col flex-grow h-full shrink bg-white/90 rounded-2xl shadow-lg m-4 border-2 border-purple-100">
 
                     <div className="top flex justify-between w-full">
 
@@ -386,7 +390,7 @@ const Project = () => {
                     <div className="bottom flex flex-grow max-w-full shrink overflow-auto">
                         {
                             fileTree[ currentFile ] && (
-                                <div className="code-editor-area h-full overflow-auto flex-grow bg-slate-50">
+                                <div className="code-editor-area h-full overflow-auto flex-grow bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-4">
                                     <pre
                                         className="hljs h-full">
                                         <code
