@@ -272,6 +272,12 @@ const Project = () => {
                             <input
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault();
+                                        send();
+                                    }
+                                }}
                                 className='p-2 px-4 border-none outline-none flex-grow' type="text" placeholder='Enter message' />
                             <button
                                 onClick={send}
