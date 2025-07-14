@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 const Home = () => {
 
-    const { user } = useContext(UserContext)
+    const { user, setUser } = useContext(UserContext)
     const [ isModalOpen, setIsModalOpen ] = useState(false)
     const [ isEditModalOpen, setIsEditModalOpen ] = useState(false)
     const [ projectName, setProjectName ] = useState("")
@@ -93,31 +93,45 @@ const Home = () => {
             });
     }, [user]);
 
+    // Logout function
+    function handleLogout() {
+        localStorage.removeItem('token');
+        setUser(null);
+        navigate('/login');
+    }
+
     return (
-        <main className='p-4'>
-            <div className="projects flex flex-wrap gap-3">
+        <main className='relative min-h-screen bg-gradient-to-br from-blue-50 to-purple-100 p-4'>
+            {/* Logout Button */}
+            <button
+                onClick={handleLogout}
+                className="absolute top-4 right-4 px-4 py-2 bg-red-500 text-white rounded shadow hover:bg-red-600 transition-all z-20"
+            >
+                <i className="ri-logout-box-r-line mr-2"></i>Logout
+            </button>
+            <div className="projects flex flex-wrap gap-6 justify-center mt-8">
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="project p-4 border border-slate-300 rounded-md">
-                    New Project
-                    <i className="ri-link ml-2"></i>
+                    className="project p-6 border-2 border-blue-300 bg-white rounded-xl shadow-md hover:shadow-lg hover:bg-blue-50 transition-all text-lg font-semibold flex flex-col items-center justify-center min-w-56 min-h-32">
+                    <span>New Project</span>
+                    <i className="ri-add-circle-line text-3xl mt-2 text-blue-500"></i>
                 </button>
 
                 {
                     projects.map((project) => (
-                        <div key={project._id} className="project flex flex-col gap-2 p-4 border border-slate-300 rounded-md min-w-52 hover:bg-slate-200 relative">
-                            <h2 className='font-semibold'>{project.name}</h2>
+                        <div key={project._id} className="project flex flex-col gap-2 p-6 border-2 border-purple-200 rounded-xl min-w-56 bg-white hover:bg-purple-50 shadow-md hover:shadow-lg transition-all relative">
+                            <h2 className='font-semibold text-xl text-purple-700'>{project.name}</h2>
 
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 items-center">
                                 <p> <small> <i className="ri-user-line"></i> Collaborators</small> :</p>
-                                {project.users.length}
+                                <span className="font-bold text-purple-500">{project.users.length}</span>
                             </div>
 
                             <div className="actions flex gap-2 mt-2">
                                 <button 
                                     onClick={() => navigate(`/project`, { state: { project } })}
-                                    className="open-btn flex-grow py-1 bg-blue-500 text-white rounded">
-                                    Open
+                                    className="open-btn flex-grow py-1 bg-blue-500 text-white rounded shadow hover:bg-blue-600 transition-all">
+                                    <i className="ri-folder-open-line mr-1"></i>Open
                                 </button>
                                 <button 
                                     onClick={(e) => {
