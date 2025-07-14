@@ -218,216 +218,219 @@ const Project = () => {
     
 
     return (
-        <main className='h-screen w-screen flex bg-gradient-to-br from-blue-50 to-purple-100'>
+        <main className='h-screen w-screen flex flex-col bg-gradient-to-br from-blue-50 to-purple-100'>
             {/* Header */}
-            <header className="w-full absolute top-0 left-0 flex justify-center items-center py-8 z-30 pointer-events-none">
-                <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 drop-shadow-lg tracking-wide pointer-events-auto">VAgent</h1>
+            <header className="w-full flex justify-center items-center py-8 mb-2 z-30">
+                <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 drop-shadow-lg tracking-wide">VAgent</h1>
             </header>
-            <section className="left relative flex flex-col h-screen min-w-96 bg-white/80 rounded-tr-3xl rounded-br-3xl shadow-xl border-r-2 border-blue-200 mt-20 ml-4 mb-4">
-                <header className='flex justify-between items-center p-2 px-4 w-full bg-slate-100 absolute z-10 top-0'>
-                    <div className="flex items-center gap-2">
-                        <button className="back-button p-2" onClick={goBack}>
-                            <i className="ri-arrow-left-line"></i>
-                        </button>
-                        <button className='flex gap-2' onClick={() => setIsModalOpen(true)}>
-                            <i className="ri-add-fill mr-1"></i>
-                            <p>Add collaborator</p>
-                        </button>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        {!isCreator && (
-                            <button 
-                                onClick={leaveProject}
-                                className="leave-project-btn text-red-500 flex items-center gap-1 px-2 py-1 rounded hover:bg-red-100"
-                            >
-                                <i className="ri-logout-box-line"></i>
-                                <span>Leave</span>
+            <div className="flex flex-row flex-grow w-full h-full" style={{ minHeight: 0 }}>
+                <section className="left relative flex flex-col h-full min-w-96 bg-white/80 rounded-tr-3xl rounded-br-3xl shadow-xl border-r-2 border-blue-200 ml-4 mb-4" style={{ marginTop: 0 }}>
+                    <header className='flex justify-between items-center p-2 px-4 w-full bg-slate-100 absolute z-10 top-0'>
+                        <div className="flex items-center gap-2">
+                            <button className="back-button p-2" onClick={goBack}>
+                                <i className="ri-arrow-left-line"></i>
                             </button>
-                        )}
-                        <button onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} className='p-2'>
-                            <i className="ri-group-fill"></i>
-                        </button>
-                    </div>
-                </header>
-                <div className="conversation-area pt-14 pb-10 flex-grow flex flex-col h-full relative rounded-2xl bg-white/90 shadow-inner mx-4 my-4">
-
-                    <div
-                        ref={messageBox}
-                        className="message-box p-4 flex-grow flex flex-col gap-3 overflow-auto max-h-full scrollbar-hide">
-                        {messages.map((msg, index) => (
-                            <div key={index} className={`${msg.sender._id === 'ai' ? 'max-w-80' : 'max-w-52'} ${msg.sender._id == user._id.toString() && 'ml-auto'}  message flex flex-col p-3 bg-gradient-to-r from-blue-100 to-purple-100 w-fit rounded-xl shadow`}>
-                                <small className='opacity-65 text-xs'>{msg.sender.email}</small>
-                                <div className='text-sm'>
-                                    {msg.sender._id === 'ai' ?
-                                        WriteAiMessage(msg.message)
-                                        : <p>{msg.message}</p>}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="inputField w-full flex absolute bottom-0 bg-white/80 rounded-b-2xl shadow-inner p-2">
-                        <input
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            className='p-2 px-4 border-none outline-none flex-grow' type="text" placeholder='Enter message' />
-                        <button
-                            onClick={send}
-                            className='px-5 bg-slate-950 text-white'><i className="ri-send-plane-fill"></i></button>
-                    </div>
-                </div>
-                <div className={`sidePanel w-full h-full flex flex-col gap-2 bg-white/90 absolute transition-all ${isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'} top-0 rounded-2xl shadow-lg border-l-2 border-blue-200`}>
-                    <header className='flex justify-between items-center px-4 p-2 bg-slate-200'>
-
-                        <h1
-                            className='font-semibold text-lg'
-                        >Collaborators</h1>
-
-                        <button onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} className='p-2'>
-                            <i className="ri-close-fill"></i>
-                        </button>
+                            <button className='flex gap-2' onClick={() => setIsModalOpen(true)}>
+                                <i className="ri-add-fill mr-1"></i>
+                                <p>Add collaborator</p>
+                            </button>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            {!isCreator && (
+                                <button 
+                                    onClick={leaveProject}
+                                    className="leave-project-btn text-red-500 flex items-center gap-1 px-2 py-1 rounded hover:bg-red-100"
+                                >
+                                    <i className="ri-logout-box-line"></i>
+                                    <span>Leave</span>
+                                </button>
+                            )}
+                            <button onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} className='p-2'>
+                                <i className="ri-group-fill"></i>
+                            </button>
+                        </div>
                     </header>
-                    <div className="users flex flex-col gap-2">
+                    <div className="conversation-area pt-14 pb-10 flex-grow flex flex-col h-full relative rounded-2xl bg-white/90 shadow-inner mx-4 my-4">
 
-                        {project.users && project.users.map((collaborator, index) => {
-                            const isProjectCreator = index === 0;
-                            const isCurrentUser = collaborator._id === user._id;
-                            return (
-                                <div key={collaborator._id} className="user p-2 flex justify-between items-center hover:bg-slate-200">
-                                    <div className="flex gap-2 items-center">
-                                        <div className='aspect-square rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600'>
-                                            <i className="ri-user-fill absolute"></i>
+                        <div
+                            ref={messageBox}
+                            className="message-box p-4 flex-grow flex flex-col gap-3 overflow-auto max-h-full scrollbar-hide">
+                            {messages.map((msg, index) => (
+                                <div key={index} className={`${msg.sender._id === 'ai' ? 'max-w-80' : 'max-w-52'} ${msg.sender._id == user._id.toString() && 'ml-auto'}  message flex flex-col p-3 bg-gradient-to-r from-blue-100 to-purple-100 w-fit rounded-xl shadow`}>
+                                    <small className='opacity-65 text-xs'>{msg.sender.email}</small>
+                                    <div className='text-sm'>
+                                        {msg.sender._id === 'ai' ?
+                                            WriteAiMessage(msg.message)
+                                            : <p>{msg.message}</p>}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="inputField w-full flex absolute bottom-0 bg-white/80 rounded-b-2xl shadow-inner p-2">
+                            <input
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                                className='p-2 px-4 border-none outline-none flex-grow' type="text" placeholder='Enter message' />
+                            <button
+                                onClick={send}
+                                className='px-5 bg-slate-950 text-white'><i className="ri-send-plane-fill"></i></button>
+                        </div>
+                    </div>
+                    <div className={`sidePanel w-full h-full flex flex-col gap-2 bg-white/90 absolute transition-all ${isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'} top-0 rounded-2xl shadow-lg border-l-2 border-blue-200`}>
+                        <header className='flex justify-between items-center px-4 p-2 bg-slate-200'>
+
+                            <h1
+                                className='font-semibold text-lg'
+                            >Collaborators</h1>
+
+                            <button onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} className='p-2'>
+                                <i className="ri-close-fill"></i>
+                            </button>
+                        </header>
+                        <div className="users flex flex-col gap-2">
+
+                            {project.users && project.users.map((collaborator, index) => {
+                                const isProjectCreator = index === 0;
+                                const isCurrentUser = collaborator._id === user._id;
+                                return (
+                                    <div key={collaborator._id} className="user p-2 flex justify-between items-center hover:bg-slate-200">
+                                        <div className="flex gap-2 items-center">
+                                            <div className='aspect-square rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600'>
+                                                <i className="ri-user-fill absolute"></i>
+                                            </div>
+                                            <div>
+                                                <h1 className='font-semibold text-lg'>{collaborator.email}</h1>
+                                                {isProjectCreator && <span className='text-xs text-gray-500'>Creator</span>}
+                                                {isCurrentUser && !isProjectCreator && <span className='text-xs text-blue-500'>You</span>}
+                                            </div>
                                         </div>
                                         <div>
-                                            <h1 className='font-semibold text-lg'>{collaborator.email}</h1>
-                                            {isProjectCreator && <span className='text-xs text-gray-500'>Creator</span>}
-                                            {isCurrentUser && !isProjectCreator && <span className='text-xs text-blue-500'>You</span>}
+                                            {isCreator && !isProjectCreator && !isCurrentUser && (
+                                                <button 
+                                                    onClick={() => removeCollaborator(collaborator._id)}
+                                                    className="remove-user p-2 text-red-500 hover:bg-red-100 rounded-full"
+                                                >
+                                                    <i className="ri-close-circle-line"></i>
+                                                </button>
+                                            )}
+                                            {isCurrentUser && !isProjectCreator && (
+                                                <button 
+                                                    onClick={leaveProject}
+                                                    className="leave-project-btn text-red-500 flex items-center gap-1 px-2 py-1 rounded hover:bg-red-100"
+                                                >
+                                                    <i className="ri-logout-box-line"></i>
+                                                    <span>Leave</span>
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
-                                    <div>
-                                        {isCreator && !isProjectCreator && !isCurrentUser && (
-                                            <button 
-                                                onClick={() => removeCollaborator(collaborator._id)}
-                                                className="remove-user p-2 text-red-500 hover:bg-red-100 rounded-full"
-                                            >
-                                                <i className="ri-close-circle-line"></i>
-                                            </button>
-                                        )}
-                                        {isCurrentUser && !isProjectCreator && (
-                                            <button 
-                                                onClick={leaveProject}
-                                                className="leave-project-btn text-red-500 flex items-center gap-1 px-2 py-1 rounded hover:bg-red-100"
-                                            >
-                                                <i className="ri-logout-box-line"></i>
-                                                <span>Leave</span>
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-                            );
-                        })}
+                                );
+                            })}
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <section className="right flex-grow h-full flex">
+                <section className="right flex-grow h-full flex flex-col" style={{ minHeight: 0 }}>
 
-                <div className="explorer h-full max-w-64 min-w-52 bg-white/80 rounded-2xl shadow-lg m-4 border-2 border-blue-100">
-                    <div className="file-tree w-full p-2">
-                        {
-                            Object.keys(fileTree).map((file, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => {
-                                        setCurrentFile(file)
-                                        setOpenFiles([ ...new Set([ ...openFiles, file ]) ])
-                                    }}
-                                    className="tree-element cursor-pointer p-2 px-4 flex items-center gap-2 bg-gradient-to-r from-blue-100 to-purple-100 w-full rounded-lg mb-2 shadow hover:bg-blue-200 transition-all">
-                                    <p
-                                        className='font-semibold text-lg'
-                                    >{file}</p>
-                                </button>))
-
-                        }
-                    </div>
-
-                </div>
-
-
-                <div className="code-editor flex flex-col flex-grow h-full shrink bg-white/90 rounded-2xl shadow-lg m-4 border-2 border-purple-100">
-
-                    <div className="top flex justify-between w-full">
-
-                        <div className="files flex">
+                    <div className="explorer h-full max-w-64 min-w-52 bg-white/80 rounded-2xl shadow-lg m-4 border-2 border-blue-100">
+                        <div className="file-tree w-full p-2">
                             {
-                                openFiles.map((file, index) => (
-                                    <div key={index} className="flex items-center">
-                                        <button
-                                            onClick={() => setCurrentFile(file)}
-                                            className={`open-file cursor-pointer p-2 px-4 flex items-center w-fit gap-2 ${currentFile === file ? 'bg-slate-400' : 'bg-slate-300'}`}>
-                                            <p className='font-semibold text-lg'>{file}</p>
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setOpenFiles(openFiles.filter(openFile => openFile !== file));
-                                                if (currentFile === file) {
-                                                    setCurrentFile(null); // Optionally reset currentFile if the closed file was active
-                                                }
-                                            }}
-                                            className={`close-button p-2 flex items-center justify-center ${currentFile === file ? 'bg-slate-400' : 'bg-slate-300'} text-white`}
-                                            style={{ height: '100%' }}
-                                        >
-                                            <i className="ri-close-fill"></i>
-                                        </button>
-                                    </div>
-                                ))
+                                Object.keys(fileTree).map((file, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => {
+                                            setCurrentFile(file)
+                                            setOpenFiles([ ...new Set([ ...openFiles, file ]) ])
+                                        }}
+                                        className="tree-element cursor-pointer p-2 px-4 flex items-center gap-2 bg-gradient-to-r from-blue-100 to-purple-100 w-full rounded-lg mb-2 shadow hover:bg-blue-200 transition-all">
+                                        <p
+                                            className='font-semibold text-lg'
+                                        >{file}</p>
+                                    </button>))
+
                             }
                         </div>
 
-                        
-                        
                     </div>
-                    <div className="bottom flex flex-grow max-w-full shrink overflow-auto">
-                        {
-                            fileTree[ currentFile ] && (
-                                <div className="code-editor-area h-full overflow-auto flex-grow bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-4">
-                                    <pre
-                                        className="hljs h-full">
-                                        <code
-                                            className="hljs h-full outline-none"
-                                            contentEditable
-                                            suppressContentEditableWarning
-                                            onBlur={(e) => {
-                                                const updatedContent = e.target.innerText;
-                                                const ft = {
-                                                    ...fileTree,
-                                                    [ currentFile ]: {
-                                                        file: {
-                                                            contents: updatedContent
+
+
+                    <div className="code-editor flex flex-col flex-grow h-full shrink bg-white/90 rounded-2xl shadow-lg m-4 border-2 border-purple-100" style={{ minHeight: 0 }}>
+
+                        <div className="top flex justify-between w-full" style={{ zIndex: 10, background: 'transparent', position: 'relative' }}>
+
+                            <div className="files flex">
+                                {
+                                    openFiles.map((file, index) => (
+                                        <div key={index} className="flex items-center">
+                                            <button
+                                                onClick={() => setCurrentFile(file)}
+                                                className={`open-file cursor-pointer p-2 px-4 flex items-center w-fit gap-2 ${currentFile === file ? 'bg-slate-400' : 'bg-slate-300'}`}>
+                                                <p className='font-semibold text-lg'>{file}</p>
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setOpenFiles(openFiles.filter(openFile => openFile !== file));
+                                                    if (currentFile === file) {
+                                                        setCurrentFile(null); // Optionally reset currentFile if the closed file was active
+                                                    }
+                                                }}
+                                                className={`close-button p-2 flex items-center justify-center ${currentFile === file ? 'bg-slate-400' : 'bg-slate-300'} text-white`}
+                                                style={{ height: '100%' }}
+                                            >
+                                                <i className="ri-close-fill"></i>
+                                            </button>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+
+                            
+                            
+                        </div>
+                        <div className="bottom flex flex-grow max-w-full shrink overflow-auto">
+                            {
+                                fileTree[ currentFile ] && (
+                                    <div className="code-editor-area h-full overflow-auto flex-grow bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-4">
+                                        <pre
+                                            className="hljs h-full">
+                                            <code
+                                                className="hljs h-full outline-none"
+                                                contentEditable
+                                                suppressContentEditableWarning
+                                                onBlur={(e) => {
+                                                    const updatedContent = e.target.innerText;
+                                                    const ft = {
+                                                        ...fileTree,
+                                                        [ currentFile ]: {
+                                                            file: {
+                                                                contents: updatedContent
+                                                            }
                                                         }
                                                     }
-                                                }
-                                                setFileTree(ft)
-                                                saveFileTree(ft)
-                                            }}
-                                            dangerouslySetInnerHTML={{ __html: hljs.highlight('javascript', fileTree[ currentFile ].file.contents).value }}
-                                            style={{
-                                                whiteSpace: 'pre-wrap',
-                                                paddingBottom: '25rem',
-                                                counterSet: 'line-numbering',
-                                            }}
-                                        />
-                                    </pre>
-                                </div>
-                            )
-                        }
+                                                    setFileTree(ft)
+                                                    saveFileTree(ft)
+                                                }}
+                                                dangerouslySetInnerHTML={{ __html: hljs.highlight('javascript', fileTree[ currentFile ].file.contents).value }}
+                                                style={{
+                                                    whiteSpace: 'pre-wrap',
+                                                    paddingBottom: '25rem',
+                                                    counterSet: 'line-numbering',
+                                                }}
+                                            />
+                                        </pre>
+                                    </div>
+                                )
+                            }
+                        </div>
+                        
+
                     </div>
-                    
-
-                </div>
 
 
-            </section>
+                </section>
+
+            </div>
 
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
