@@ -332,9 +332,10 @@ const Project = () => {
                     </div>
                 </section>
 
-                <section className="right flex-grow h-full flex flex-col" style={{height: 'calc(100vh - 48px)'}}>
+                <section className="right flex-grow h-full flex flex-row" style={{height: 'calc(100vh - 48px)'}}>
 
-                    <div className="explorer h-full max-w-64 min-w-52 bg-white/80 rounded-2xl shadow-lg m-4 border-2 border-blue-100">
+                    {/* File Explorer and Code Editor side by side */}
+                    <div className="explorer h-full max-w-64 min-w-52 bg-white/80 rounded-2xl shadow-lg m-4 border-2 border-blue-100 flex-shrink-0">
                         <div className="file-tree w-full p-2">
                             {
                                 Object.keys(fileTree).map((file, index) => (
@@ -352,9 +353,7 @@ const Project = () => {
 
                             }
                         </div>
-
                     </div>
-
 
                     <div className="code-editor flex flex-col flex-grow h-full shrink bg-white/90 rounded-2xl shadow-lg m-4 border-2 border-purple-100" style={{ minHeight: 0, height: '100%' }}>
 
