@@ -218,13 +218,14 @@ const Project = () => {
     
 
     return (
-        <main className='h-screen w-screen flex flex-col bg-gradient-to-br from-blue-50 to-purple-100'>
+        <main className='h-screen w-screen flex bg-gradient-to-br from-blue-50 to-purple-100'>
             {/* Header */}
-            <header className="w-full flex justify-center items-center py-8 mb-2 z-30">
+            <header className="w-full fixed top-0 left-0 flex justify-center items-center py-8 z-30 bg-gradient-to-r from-blue-50 to-purple-100" style={{height: '80px'}}>
                 <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 drop-shadow-lg tracking-wide">VAgent</h1>
             </header>
-            <div className="flex flex-row flex-grow w-full h-full" style={{ minHeight: 0 }}>
-                <section className="left relative flex flex-col h-full min-w-96 bg-white/80 rounded-tr-3xl rounded-br-3xl shadow-xl border-r-2 border-blue-200 ml-4 mb-4" style={{ marginTop: 0 }}>
+            {/* Main content row, with top padding to avoid header overlap */}
+            <div className="flex flex-row w-full h-full pt-24" style={{height: '100vh'}}>
+                <section className="left relative flex flex-col min-w-96 bg-white/80 rounded-tr-3xl rounded-br-3xl shadow-xl border-r-2 border-blue-200 ml-4 mb-4 h-full" style={{height: 'calc(100vh - 48px)'}}>
                     <header className='flex justify-between items-center p-2 px-4 w-full bg-slate-100 absolute z-10 top-0'>
                         <div className="flex items-center gap-2">
                             <button className="back-button p-2" onClick={goBack}>
@@ -331,7 +332,7 @@ const Project = () => {
                     </div>
                 </section>
 
-                <section className="right flex-grow h-full flex flex-col" style={{ minHeight: 0 }}>
+                <section className="right flex-grow h-full flex flex-col" style={{height: 'calc(100vh - 48px)'}}>
 
                     <div className="explorer h-full max-w-64 min-w-52 bg-white/80 rounded-2xl shadow-lg m-4 border-2 border-blue-100">
                         <div className="file-tree w-full p-2">
@@ -355,7 +356,7 @@ const Project = () => {
                     </div>
 
 
-                    <div className="code-editor flex flex-col flex-grow h-full shrink bg-white/90 rounded-2xl shadow-lg m-4 border-2 border-purple-100" style={{ minHeight: 0 }}>
+                    <div className="code-editor flex flex-col flex-grow h-full shrink bg-white/90 rounded-2xl shadow-lg m-4 border-2 border-purple-100" style={{ minHeight: 0, height: '100%' }}>
 
                         <div className="top flex justify-between w-full" style={{ zIndex: 10, background: 'transparent', position: 'relative' }}>
 
