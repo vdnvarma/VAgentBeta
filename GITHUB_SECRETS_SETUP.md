@@ -15,9 +15,9 @@ Click **New repository secret** and add these one by one:
 
 | Secret Name | Description | Example Value |
 |-------------|-------------|---------------|
-| `BASE_URL` | Your production application URL | `https://vagent.onrender.com` |
-| `TEST_EMAIL` | Test user email for automation | `testuser@example.com` |
-| `TEST_PASSWORD` | Test user password | `SecurePassword123!` |
+| `BASE_URL` | Your production application URL | `https://vagentbeta.onrender.com` |
+| `TEST_EMAIL` | Test user email for automation | `test@example.com` |
+| `TEST_PASSWORD` | Test user password | `password123` |
 
 #### Optional Secrets:
 
