@@ -30,8 +30,8 @@ selenium-tests/
 - Java 11 or higher
 - Maven 3.6 or higher
 - Chrome/Firefox/Edge browser installed
-- VAgent application running on https://vagent.onrender.com (production)
-- Backend API running on https://vagentbackend.onrender.com
+- VAgent application running on https://vagentbeta.onrender.com (production)
+- Backend API running on https://vagentbetabackend.onrender.com
 
 ## Setup Instructions
 
@@ -51,7 +51,7 @@ selenium-tests/
 
 4. **Configure test settings**
    - Edit `src/test/resources/config.properties` to modify:
-     - Base URL (default: https://vagent.onrender.com)
+     - Base URL (default: https://vagentbeta.onrender.com)
      - Browser choice (chrome, firefox, edge)
      - Timeout settings
 
@@ -138,7 +138,7 @@ The tests use Page Object Model (POM) design pattern with the following pages:
 Edit `src/test/resources/config.properties`:
 ```properties
 browser=chrome          # Options: chrome, firefox, edge
-base.url=https://vagent.onrender.com
+base.url=https://vagentbeta.onrender.com
 implicit.wait=15
 explicit.wait=30
 ```
