@@ -1,0 +1,45 @@
+# Ignore IDE files
+.idea/
+*.iml
+.vscode/
+
+# Ignore Maven target directory
+target/
+
+# Ignore test outputs
+test-output/
+screenshots/
+extent-reports/
+
+# Ignore logs
+*.log
+logs/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Ignore backup files
+*.bak
+*.backup
+
+# Ignore compiled classes
+*.class
+
+# Ignore JAR files
+*.jar
+*.war
+*.ear
+
+# Ignore WebDriver executables
+chromedriver*
+geckodriver*
+msedgedriver*
+
+# Ignore test data files
+test-data/
+*test-data*

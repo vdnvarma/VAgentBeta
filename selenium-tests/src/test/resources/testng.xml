@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="VAgent Test Suite" verbose="1">
+    
+    <parameter name="browser" value="chrome"/>
+    
+    <test name="Authentication Tests" preserve-order="true">
+        <classes>
+            <class name="com.vagent.tests.AuthenticationTest"/>
+        </classes>
+    </test>
+    
+    <test name="Project Management Tests" preserve-order="true">
+        <classes>
+            <class name="com.vagent.tests.ProjectManagementTest"/>
+        </classes>
+    </test>
+    
+    <test name="Collaboration Tests" preserve-order="true">
+        <classes>
+            <class name="com.vagent.tests.CollaborationTest"/>
+        </classes>
+    </test>
+    
+    <test name="UI Elements Tests" preserve-order="true">
+        <classes>
+            <class name="com.vagent.tests.UIElementsTest"/>
+        </classes>
+    </test>
+    
+</suite>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="VAgent Smoke Test Suite" verbose="1">
+    
+    <parameter name="browser" value="chrome"/>
+    
+    <test name="Smoke Tests" preserve-order="true">
+        <classes>
+            <class name="com.vagent.tests.ConnectivityTest">
+                <methods>
+                    <include name="testApplicationConnectivity"/>
+                    <include name="testLoginPageAccessibility"/>
+                </methods>
+            </class>
+            <class name="com.vagent.tests.AuthenticationTest">
+                <methods>
+                    <include name="testLoginPageElements"/>
+                    <include name="testSuccessfulRegistration"/>
+                    <include name="testSuccessfulLogin"/>
+                </methods>
+            </class>
+            <class name="com.vagent.tests.ProjectManagementTest">
+                <methods>
+                    <include name="setupTestUser"/>
+                    <include name="testCreateNewProject"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    
+</suite>
